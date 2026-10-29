@@ -1,0 +1,964 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>SOC611 Midterm Field Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@500&family=Noto+Sans+SC:wght@400;600&display=swap">
+<style>
+/* Layout: a field notebook — sticky tab rail on top, one readable column (max 920px), diagrams in ruled "plates". */
+:root{
+  --paper:#F3F5F2; --sheet:#FFFFFF; --ink:#18202B; --ink-2:#4A5563; --rule:#D5DBD6;
+  --teal:#0E6B6E; --teal-soft:#DCEEEC; --hl:#F4DC5A; --hl-soft:#FBF1B8; --alert:#B23A2B; --alert-soft:#F6E1DC;
+  --ok:#2E7D4F; --ok-soft:#DDF0E3; --machine:#5B4BA8; --machine-soft:#E6E2F6;
+  --f-display:"Bricolage Grotesque","Noto Sans SC",system-ui,sans-serif;
+  --f-body:"Source Serif 4","Noto Sans SC","PingFang SC","Microsoft YaHei",Georgia,serif;
+  --f-zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#12171D; --sheet:#1A2129; --ink:#E7ECEF; --ink-2:#A8B3BD; --rule:#2E3943;
+  --teal:#5FC2C0; --teal-soft:#16393B; --hl:#E9CF4C; --hl-soft:#3A3416; --alert:#F08A78; --alert-soft:#3D2420;
+  --ok:#6FCF97; --ok-soft:#17321F; --machine:#A89BEA; --machine-soft:#2A2547; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#12171D; --sheet:#1A2129; --ink:#E7ECEF; --ink-2:#A8B3BD; --rule:#2E3943;
+  --teal:#5FC2C0; --teal-soft:#16393B; --hl:#E9CF4C; --hl-soft:#3A3416; --alert:#F08A78; --alert-soft:#3D2420;
+  --ok:#6FCF97; --ok-soft:#17321F; --machine:#A89BEA; --machine-soft:#2A2547; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(23px,4vw,30px);font-weight:700;margin-top:40px}
+h3{font-size:20px;font-weight:700;margin-top:26px}
+h4{font-size:16.5px;font-weight:700;margin-top:16px}
+p{margin:10px 0}
+.zh{font-family:var(--f-zh);font-size:.94em;color:var(--ink-2)}
+.mono,.label{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.label{color:var(--teal)}
+mark{background:var(--hl-soft);color:inherit;padding:0 .15em;border-radius:2px}
+a{color:var(--teal)}
+/* header */
+header.top{padding-block:28px 10px}
+.kicker{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--rule);border-radius:999px;padding:3px 10px;background:var(--sheet);color:var(--ink-2)}
+.chip.alert{border-color:var(--alert);color:var(--alert);background:var(--alert-soft)}
+.lede{font-size:18px;max-width:62ch;color:var(--ink-2)}
+/* tabs */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--paper);border-bottom:1px solid var(--rule);margin-top:14px}
+nav.tabs .row{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:8px}
+nav.tabs .row::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--ink-2);font-family:var(--f-display);font-weight:500;font-size:15px;padding:7px 12px;border-radius:8px;white-space:nowrap}
+nav.tabs a[aria-current="page"]{background:var(--ink);color:var(--paper)}
+nav.tabs a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+section.view{padding-top:8px}
+/* plates */
+.plate{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:18px;margin:18px 0;min-width:0}
+.plate>.label:first-child{display:block;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.card{border:1px solid var(--rule);border-radius:8px;padding:12px 14px;background:var(--sheet);min-width:0}
+.card h4{margin-top:0}
+.card p{margin:6px 0}
+.note{border-left:3px solid var(--hl);background:var(--hl-soft);padding:10px 14px;border-radius:0 6px 6px 0;margin:14px 0}
+.warn{border-left:3px solid var(--alert);background:var(--alert-soft);padding:10px 14px;border-radius:0 6px 6px 0;margin:14px 0}
+.ex{border-left:3px solid var(--teal);background:var(--teal-soft);padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0}
+ul.tight{margin:6px 0;padding-left:20px} ul.tight li{margin:3px 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+.tbl{overflow-x:auto}
+th,td{border-bottom:1px solid var(--rule);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-family:var(--f-display);font-weight:700;font-size:14px;background:var(--paper)}
+/* exam strip */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.stat{border:1px solid var(--rule);border-radius:8px;padding:12px 14px;background:var(--sheet)}
+.stat b{font-family:var(--f-display);font-size:28px;display:block;line-height:1.1}
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.day{border:1px solid var(--rule);border-radius:8px;padding:14px;background:var(--sheet)}
+.day .mono{color:var(--teal)}
+/* Coleman boat */
+.boat{display:grid;grid-template-columns:1fr minmax(54px,.5fr) 1fr;grid-template-rows:auto auto auto;gap:0;align-items:stretch}
+.bx{border:1.5px solid var(--ink);border-radius:8px;padding:10px;background:var(--sheet);font-size:14.5px;min-width:0}
+.bx .mono{display:block;color:var(--ink-2);font-size:10.5px;margin-bottom:4px}
+.bx.macro{background:var(--teal-soft)}
+.arr-h{display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:var(--f-mono);font-size:10.5px;color:var(--ink-2);text-align:center;padding:0 4px}
+.arr-h .line{width:100%;border-top:2px dashed var(--ink-2);position:relative;margin:4px 0}
+.arr-h .line.solid{border-top-style:solid;border-color:var(--ink)}
+.arr-h .line::after{content:"";position:absolute;right:-2px;top:-7px;border:6px solid transparent;border-left:8px solid var(--ink-2)}
+.arr-h .line.solid::after{border-left-color:var(--ink)}
+.arr-v{display:flex;align-items:center;gap:8px;padding:8px 6px;font-size:13.5px;min-width:0}
+.arr-v .glyph{font-family:var(--f-display);font-size:24px;font-weight:800;color:var(--teal);line-height:1}
+.boat-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.pill{border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:999px;padding:5px 12px;font-family:var(--f-display);font-size:14px;cursor:pointer}
+.pill[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:var(--sheet)}
+.aggtag{display:inline-block;margin-top:10px;font-family:var(--f-mono);font-size:12px;background:var(--hl-soft);padding:3px 8px;border-radius:4px}
+/* mind map */
+.mind{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;position:relative}
+.mind .core{grid-column:1/-1;justify-self:center;text-align:center;background:var(--ink);color:var(--paper);border-radius:999px;padding:10px 22px;font-family:var(--f-display);font-weight:700;font-size:18px}
+.branch{border:1px solid var(--rule);border-top:4px solid var(--teal);border-radius:8px;padding:10px 12px;background:var(--sheet);min-width:0}
+.branch h4{margin:0 0 4px;font-size:15.5px}
+.branch ul{margin:0;padding-left:18px;font-size:14.5px}
+.branch li{margin:2px 0}
+.branch.b2{border-top-color:var(--hl)} .branch.b3{border-top-color:var(--alert)} .branch.b4{border-top-color:var(--machine)}
+details.lec{border:1px solid var(--rule);border-radius:10px;background:var(--sheet);margin:14px 0}
+details.lec>summary{cursor:pointer;padding:14px 18px;font-family:var(--f-display);font-weight:700;font-size:19px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.lec>summary::-webkit-details-marker{display:none}
+details.lec>summary::after{content:"+";font-weight:800;color:var(--teal)}
+details.lec[open]>summary::after{content:"–"}
+details.lec .inner{padding:0 18px 18px}
+/* Burawoy */
+.bura{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;font-size:14px}
+.bura .h{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px}
+.bura .side{writing-mode:vertical-rl;transform:rotate(180deg)}
+.bura .q{border:1px solid var(--rule);border-radius:8px;padding:10px;background:var(--paper);min-width:0}
+.bura .q b{font-family:var(--f-display);font-size:16px}
+.bura .q .path{display:block;margin-top:6px;color:var(--alert);font-size:13.5px}
+/* Lizardo tree */
+.tree{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:14.5px}
+.tree .n{border:1.5px solid var(--ink);border-radius:8px;padding:8px 12px;background:var(--sheet);text-align:center;min-width:0}
+.tree .lvl{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
+.tree .lvl>div{flex:1 1 200px;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.tree .n.pub{background:var(--teal-soft)} .tree .n.dec{background:var(--hl-soft)} .tree .n.non{background:var(--machine-soft)}
+.tree .stem{width:2px;height:14px;background:var(--ink-2)}
+/* timeline */
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tl .t{border-top:3px solid var(--teal);padding-top:8px;font-size:14px}
+.tl .t b{font-family:var(--f-display);font-size:17px;display:block}
+/* stage */
+.stage{display:grid;grid-template-columns:2fr 1.3fr 1fr;gap:0;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;font-size:14px}
+.stage>div{padding:12px;min-width:0}
+.stage .front{background:var(--hl-soft)} .stage .back{background:var(--teal-soft);border-left:1.5px dashed var(--ink)} .stage .off{background:var(--paper);border-left:1.5px dashed var(--ink)}
+.stage b{font-family:var(--f-display);display:block;font-size:16px}
+/* orders */
+.orders{display:grid;gap:8px}
+.ord{display:grid;grid-template-columns:70px 1fr;gap:12px;align-items:start;border:1px solid var(--rule);border-radius:8px;padding:10px 12px;background:var(--sheet)}
+.ord .n{font-family:var(--f-display);font-weight:800;font-size:26px;color:var(--machine);line-height:1}
+.sit{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.sit .card{border-top:4px solid var(--machine)}
+svg text{font-family:var(--f-mono)}
+.svgbox{overflow-x:auto}
+/* confusables */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin:12px 0;background:var(--sheet)}
+.vs>div{padding:12px 14px;min-width:0;font-size:15px}
+.vs>div+div{border-left:1px solid var(--rule)}
+.vs .t{grid-column:1/-1;border-bottom:1px solid var(--rule);background:var(--paper);font-family:var(--f-display);font-weight:700;padding:8px 14px}
+.vs .t+div{border-left:none}
+.vs b{font-family:var(--f-display)}
+@media (max-width:520px){.vs{grid-template-columns:1fr}.vs>div+div{border-left:none;border-top:1px solid var(--rule)}.stage{grid-template-columns:1fr}.stage .back,.stage .off{border-left:none;border-top:1.5px dashed var(--ink)}.boat{grid-template-columns:1fr 34px 1fr}.arr-h{font-size:0}.bura{grid-template-columns:22px 1fr 1fr}}
+/* flashcards */
+.fc-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.fc{perspective:1000px;margin:10px auto;max-width:560px}
+.fc-inner{position:relative;min-height:270px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+.fc.flip .fc-inner{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1.5px solid var(--ink);border-radius:12px;background:var(--sheet);padding:22px;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+.fc-back{transform:rotateY(180deg);background:var(--teal-soft);justify-content:flex-start}
+.fc-front .term{font-family:var(--f-display);font-weight:800;font-size:28px;text-align:center}
+.fc-front .src{text-align:center;margin-top:10px}
+.fc-back p{margin:6px 0;font-size:15px}
+.fc-nav{display:flex;justify-content:space-between;align-items:center;max-width:560px;margin:8px auto;gap:8px}
+.btn{border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);border-radius:8px;padding:7px 14px;font-family:var(--f-display);font-weight:500;font-size:15px;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn:disabled{opacity:.45;cursor:default}
+select.btn{padding:6px 10px}
+/* quiz */
+.q{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:16px;margin:14px 0}
+.q .qh{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.q .stem{font-size:16.5px;margin:6px 0 10px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--rule);border-radius:8px;padding:9px 12px;margin:6px 0;cursor:pointer;background:var(--paper)}
+.opt input{margin-top:5px;accent-color:var(--teal)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--alert);background:var(--alert-soft)}
+.expl{margin-top:10px;border-left:3px solid var(--teal);padding:8px 12px;background:var(--teal-soft);border-radius:0 6px 6px 0;font-size:15px}
+.score{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--ink);color:var(--paper);border-radius:10px;padding:10px 14px;margin-top:18px;font-family:var(--f-display)}
+.score .btn{background:transparent;color:var(--paper);border-color:var(--paper);padding:4px 10px;font-size:13.5px}
+@media (max-width:520px){.score{padding:8px 12px;font-size:14px}}
+.tag-t{color:var(--alert);border-color:var(--alert)}
+/* essay */
+details.essay{border:1px solid var(--rule);border-radius:10px;background:var(--sheet);margin:14px 0}
+details.essay>summary{cursor:pointer;padding:14px 18px;list-style:none}
+details.essay>summary::-webkit-details-marker{display:none}
+details.essay>summary .qq{font-family:var(--f-display);font-weight:700;font-size:17px;display:block;margin-top:4px}
+details.essay .inner{padding:0 18px 18px}
+.model{border:1px dashed var(--teal);border-radius:8px;padding:12px 16px;background:var(--paper);font-size:15.5px}
+.model p{margin:8px 0}
+.frame{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.frame .card b{font-family:var(--f-display);font-size:20px;color:var(--teal)}
+.prob{font-family:var(--f-mono);font-size:11px;padding:2px 8px;border-radius:999px;background:var(--alert-soft);color:var(--alert)}
+.prob.mid{background:var(--hl-soft);color:var(--ink)}
+footer{margin-top:40px;color:var(--ink-2);font-size:14px;border-top:1px solid var(--rule);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.fc-inner{transition:none}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="kicker">
+    <span class="chip">SOC611 · Dr. Francisco Olivos</span>
+    <span class="chip alert">Mid-term · Oct 31</span>
+    <span class="chip">L1–L4 + 3 readings</span>
+  </div>
+  <h1>SOC611 Midterm Field Guide</h1>
+  <p class="lede">A three-day review kit for the mid-term: lecture mind maps for the MCQs, the three readings rebuilt as stories you can apply, a bank of practice questions, and essay outlines with model answers. <span class="zh">中英双语：概念用英文原词，解释用中文；作文示范用英文。</span></p>
+</header>
+
+<nav class="tabs" aria-label="Sections"><div class="row">
+  <a href="#plan">考试攻略 Plan</a>
+  <a href="#lectures">课件导图 Lectures</a>
+  <a href="#readings">三篇论文 Readings</a>
+  <a href="#confuse">易混淆 Confusables</a>
+  <a href="#cards">记忆卡 Flashcards</a>
+  <a href="#mcq">MCQ 练习</a>
+  <a href="#essay">作文预测 Essays</a>
+</div></nav>
+
+<!-- ============ PLAN ============ -->
+<section class="view" id="v-plan">
+  <h2>What the exam looks like <span class="zh">考什么</span></h2>
+  <div class="strip" style="margin-top:14px">
+    <div class="stat"><span class="label">Part A</span><b>20 MCQ</b>Lectures (slides first, textbook as support). Some questions are "select all that apply". <span class="zh">课件优先，课本辅助；有多选题。</span></div>
+    <div class="stat"><span class="label">Part B</span><b>Open-ended</b>Lizardo (2017) · Guhin et al. (2021) · Tsvetkova et al. (2024). Explain + exemplify + apply to a social issue. <span class="zh">解释 + 举例 + 应用到社会议题。</span></div>
+    <div class="stat"><span class="label">Teacher's hint</span><b>Big picture</b>"General arguments rather than small details." <span class="zh">抓主论点，不背细节。</span></div>
+  </div>
+
+  <div class="note"><b>The teacher's mock MCQs tell you his style.</b> Every one of the 10 is a <b>short scenario</b> (a divorced man, HK housing prices, a nurse, a waiter, landlords) and asks you to <b>name the concept</b>. So for every term below, memorise one scenario, not a definition. <span class="zh">老师的题全是"情景 → 选概念"。每个概念记一个例子，比背定义有用。</span></div>
+
+  <h3>Three-day plan <span class="zh">三天计划</span></h3>
+  <div class="days" style="margin-top:12px">
+    <div class="day"><span class="mono">Day 1 · Oct 28</span><h4 style="margin-top:4px">Readings (essay half)</h4>
+      <ul class="tight"><li>Read the <b>Readings</b> tab, one paper per ~1.5 h.</li><li>For each: say the one-line thesis aloud, draw its diagram from memory.</li><li>Write 1 essay outline per paper from the <b>Essays</b> tab (15 min each, no notes).</li></ul>
+      <p class="zh">第一天：论文。每篇读完能口述一句话主论点 + 默画图。</p></div>
+    <div class="day"><span class="mono">Day 2 · Oct 29</span><h4 style="margin-top:4px">Lectures (MCQ half)</h4>
+      <ul class="tight"><li>Go through L1→L4 mind maps; open the textbook only for terms you can't explain.</li><li>Do the <b>Confusables</b> tab — this is where MCQ marks are lost.</li><li>Do all MCQs once; redo the wrong ones.</li></ul>
+      <p class="zh">第二天：课件 + 易混淆 + 全部MCQ。</p></div>
+    <div class="day"><span class="mono">Day 3 · Oct 30</span><h4 style="margin-top:4px">Retrieval + timed writing</h4>
+      <ul class="tight"><li>Flashcards: shuffle all, aim for &gt;85%.</li><li>Write 2 full essays under time (≈25 min each) using the D‑M‑A‑L frame.</li><li>Evening: only the yellow "must-know" boxes. Sleep.</li></ul>
+      <p class="zh">第三天：闪卡 + 限时写两篇 + 晚上只看黄色重点。</p></div>
+  </div>
+
+  <h3>Top 12 must-know ideas <span class="zh">必考 12 点</span></h3>
+  <div class="tbl plate" style="padding:0">
+  <table>
+    <tr><th>#</th><th>Idea</th><th>One-line memory hook <span class="zh">记忆钩子</span></th></tr>
+    <tr><td>1</td><td>Sociological imagination (Mills)</td><td>Private trouble → public issue; biography × history. 橘生淮南则为橘。</td></tr>
+    <tr><td>2</td><td>Coleman's boat: ① situational ② action‑formation ③ aggregation</td><td>Down, across, up. Macro→macro alone is only a <i>description</i>.</td></tr>
+    <tr><td>3</td><td>Aggregation types</td><td>Additive (Weber) · coordinated (revolution, free‑rider) · threshold/cascade (segregation) · emergent (panic myth).</td></tr>
+    <tr><td>4</td><td>Burawoy 2×2 + pathologies</td><td>Professional–scholasticism · Policy–servility · Critical–dogmatism · Public–faddishness.</td></tr>
+    <tr><td>5</td><td>Manifest / latent / dysfunction</td><td>University: jobs / marriage market / graduate unemployment.</td></tr>
+    <tr><td>6</td><td>Public vs personal culture; declarative vs nondeclarative</td><td>"Know‑that" you can say vs "know‑how" your body does (lemon, passcode, MTR space).</td></tr>
+    <tr><td>7</td><td>Mores vs folkways; sanctions; cultural capital (3 forms)</td><td>Queue = folkway. Accent / piano / degree.</td></tr>
+    <tr><td>8</td><td>Measuring culture: thought, talk, action</td><td>"Talk is cheap": what people say ≠ what they do → audit study.</td></tr>
+    <tr><td>9</td><td>Agents & types of socialization</td><td>Family, school (hidden curriculum), peers (anticipatory), media. Primary vs secondary.</td></tr>
+    <tr><td>10</td><td>Interaction vs social influence vs socialization</td><td>One encounter / fades / persists and transfers.</td></tr>
+    <tr><td>11</td><td>Status, role, role conflict vs strain; Goffman front/back</td><td>Two statuses = conflict; one status = strain. Waiter's kitchen = backstage.</td></tr>
+    <tr><td>12</td><td>Thomas theorem; ANT; humans & machines</td><td>Bank run, toilet paper; speed bump = delegation; bots change macro outcomes.</td></tr>
+  </table></div>
+
+  <div class="warn"><b>One gap in the files.</b> Mock Q9 (primary vs secondary <i>groups</i>) and Q10 (deviance, labelling, broken windows) are not in the Lecture 1–4 slides you uploaded. They may come from a Lecture 5 file that isn't in the folder. I added short notes for both in <b>Confusables</b>; check whether you have a Lecture 5 deck. <span class="zh">模拟题第9、10题的内容不在L1–L4课件里，可能来自第5讲，请确认有没有第5讲PPT。</span></div>
+</section>
+
+<!-- ============ LECTURES ============ -->
+<section class="view" id="v-lectures" hidden>
+  <h2>Lecture mind maps <span class="zh">课件思维导图（MCQ）</span></h2>
+  <p>Each lecture opens into a mind map, its key diagram, and the examples the teacher used in class. Examples from class are the most likely MCQ scenarios. <span class="zh">课堂例子 = 最可能的选择题情景。</span></p>
+
+  <details class="lec" open><summary>L1 · What is Sociology?</summary><div class="inner">
+    <div class="mind">
+      <div class="core">Sociology = scientific study of society</div>
+      <div class="branch"><h4>Sociological imagination (Mills)</h4><ul>
+        <li>Relate <b>private troubles</b> to <b>public issues</b>; see the general in the particular.</li>
+        <li>Biography = intersection of <b>society & history</b>.</li>
+        <li>Ex: divorced man → divorce rates, women's employment, marriage expectations; Taylor Swift "The Man" → gendered double standard.</li>
+        <li class="zh">个人困扰 ↔ 公共议题；个人传记 × 历史。</li></ul></div>
+      <div class="branch b2"><h4>Society & social problems</h4><ul>
+        <li>Giddens: people + <b>territory</b> + common <b>political authority</b> + <b>distinct identity</b>.</li>
+        <li>This class ✗ (no political authority, identity ends in Dec). Hong Kong ✓.</li>
+        <li>Social problem: beyond the individual + many concerned. Sociology was born <i>because of</i> social problems.</li>
+        <li><b>Eufunction</b> (Merton 1949): positive counterpart of dysfunction. Coleman (1966): doctors' networks spread a new drug.</li></ul></div>
+      <div class="branch b3"><h4>Birth of sociology</h4><ul>
+        <li>Comte coined the word (socius + logos). Founders: Marx, Durkheim, Weber.</li>
+        <li>3 transformations: <b>industrialization, urbanization, democratization</b>.</li>
+        <li><b>Gemeinschaft → Gesellschaft</b>: tradition, religion, community → individuality, reason, contract.</li>
+        <li>Progress <i>and</i> disorder / alienation.</li></ul></div>
+      <div class="branch b4"><h4>Three classic approaches</h4><ul>
+        <li><b>Structural‑functional</b>: society as a system → order. Structure = stable pattern; Sewell: schemas + resources.</li>
+        <li><b>Social‑conflict</b>: inequality → conflict & change (class, gender, race). Rick & Morty's Citadel.</li>
+        <li><b>Symbolic‑interaction</b>: micro; meanings made in everyday interaction.</li>
+        <li>First two = <b>macro</b>; SI = <b>micro</b>.</li></ul></div>
+    </div>
+
+    <h3>Coleman's boat <span class="zh">科尔曼之船 — 最重要的工具</span></h3>
+    <div class="plate">
+      <span class="label">Interactive · pick an example</span>
+      <div class="boat-tabs" id="boatTabs"></div>
+      <div class="boat" id="boat">
+        <div class="bx macro"><span class="mono">Macro condition</span><span data-k="mc"></span></div>
+        <div class="arr-h"><span>observed correlation</span><div class="line"></div><span>(description only)</span></div>
+        <div class="bx macro"><span class="mono">Macro outcome</span><span data-k="mo"></span></div>
+        <div class="arr-v"><span class="glyph">①↓</span><span><b>Situational</b>: <span data-k="a1"></span></span></div>
+        <div></div>
+        <div class="arr-v"><span class="glyph">③↑</span><span><b>Aggregation</b>: <span data-k="a3"></span></span></div>
+        <div class="bx"><span class="mono">Micro situation / belief</span><span data-k="ms"></span></div>
+        <div class="arr-h"><span>② action‑formation</span><div class="line solid"></div><span></span></div>
+        <div class="bx"><span class="mono">Micro action</span><span data-k="ma"></span></div>
+      </div>
+      <p style="margin-top:10px"><b>② Action‑formation:</b> <span data-k="a2" id="a2"></span></p>
+      <span class="aggtag" id="aggtag"></span>
+    </div>
+    <div class="note"><b>Rules the teacher stresses.</b> A macro→macro correlation alone is a <b>description</b>. Add a plausible micro story → an <b>explanation</b>. Test it with data → a <b>strong explanation</b>. Every arrow needs a stated reason (<i>explanatory obligation</i>), but you need not test every arrow (<i>empirical obligation</i> is selective). <span class="zh">每个箭头都要说明理由，但不必每个都用数据验证。</span><br>
+    Data per arrow: macro = census/market data · ① surveys, interviews, digital traces · ② experiments, behavioural data · ③ network data, agent‑based models, simulation.</div>
+
+    <h3>Burawoy (2004): For Public Sociology</h3>
+    <div class="plate">
+      <div class="bura">
+        <div></div><div class="h">Instrumental knowledge<br><span class="zh">工具性：解决给定问题</span></div><div class="h">Reflexive knowledge<br><span class="zh">反思性：追问价值与目的</span></div>
+        <div class="h side">Academic audience</div>
+        <div class="q"><b>Professional</b><br>Peer‑reviewed theories & methods.<span class="path">Pathology: self‑referential scholasticism</span></div>
+        <div class="q"><b>Critical</b><br>Questions the foundations, values and silences of professional sociology.<span class="path">Pathology: dogmatism</span></div>
+        <div class="h side">Extra‑academic</div>
+        <div class="q"><b>Policy</b><br>Serves a client's goals (government, NGO, firm).<span class="path">Pathology: servility</span></div>
+        <div class="q"><b>Public</b><br>Dialogue with publics about values: op‑eds, talks, movements.<span class="path">Pathology: faddishness</span></div>
+      </div>
+      <p class="zh" style="margin-top:10px">记忆法：<b>"写给谁 × 为了什么"</b>。四种都合法、互相需要；健康的学科让它们保持张力。</p>
+    </div>
+
+    <h3>Functions — the university example</h3>
+    <div class="grid3">
+      <div class="card"><h4>Manifest</h4><p>Recognized, intended: produce graduates for the labour market.</p></div>
+      <div class="card"><h4>Latent</h4><p>Unrecognized, unintended: a "marriage broker" (assortative marriage — Dong & Xie 2023).</p></div>
+      <div class="card"><h4>Dysfunction</h4><p>Negative: over‑supply of graduates → unemployment.</p></div>
+    </div>
+  </div></details>
+
+  <details class="lec"><summary>L2 · Culture</summary><div class="inner">
+    <div class="mind">
+      <div class="core">Culture = what we think + how we act + what we own</div>
+      <div class="branch"><h4>Basics</h4><ul>
+        <li>Shared, socially transmitted, <b>not biological</b>. (Kroeber & Kluckhohn found 164 definitions.)</li>
+        <li><b>Nonmaterial</b> (ideas: 濕濕碎, "okay lah") vs <b>material</b> (objects).</li>
+        <li>Culture shock; we take our culture as "natural".</li>
+        <li>Culture (way of life) ≠ nation (political entity) ≠ society (organized interaction). Culture enables society — and resists change.</li></ul></div>
+      <div class="branch b2"><h4>Levels (Lizardo 2017)</h4><ul>
+        <li><b>Public culture</b>: icons, discourses, institutions.</li>
+        <li><b>Personal culture</b>: declarative (values, worldviews you can say) / nondeclarative (skills, dispositions, associations — the lemon).</li>
+        <li>Values can be public <i>or</i> personal, depending where you observe them.</li></ul></div>
+      <div class="branch b3"><h4>Elements</h4><ul>
+        <li><b>Values</b>: standards of desirable. <b>Beliefs</b>: ideas held true because of values.</li>
+        <li><b>Norms</b>: <i>mores</i> (moral weight) vs <i>folkways</i> (routine, casual).</li>
+        <li><b>Sanctions</b>: rewards/punishments.</li>
+        <li>World Values Survey: traditional ↔ secular‑rational; survival ↔ self‑expression.</li>
+        <li><b>Symbol</b>: anything carrying a shared meaning; "doing culture" in interaction.</li></ul></div>
+      <div class="branch b4"><h4>Cultural capital (Bourdieu 1986)</h4><ul>
+        <li><b>Embodied</b> (accent, taste, formal‑dinner know‑how) · <b>Objectified</b> (books, piano, art) · <b>Institutionalized</b> (degree).</li>
+        <li>Transmission → conversion (school rewards it as "talent") → <b>social reproduction</b>.</li></ul></div>
+    </div>
+    <h3>Coleman's boat with culture (class examples)</h3>
+    <div class="tbl plate" style="padding:0"><table>
+      <tr><th>Example</th><th>Macro condition</th><th>Micro</th><th>Macro outcome</th></tr>
+      <tr><td>Protestant ethic</td><td>Doctrine of calling & salvation anxiety (public culture)</td><td>Personal value (declarative) + habitual thrift (nondeclarative) → work, save, reinvest</td><td>Capitalism + new inequality</td></tr>
+      <tr><td>Queuing</td><td>Folkway: one line, wait your turn</td><td>Automatic habit (nondeclarative); mild sanction (a stare)</td><td>Order reproduced with no central enforcer</td></tr>
+      <tr><td>Lai see 利是</td><td>Red packet as shared symbol</td><td>Felt obligation; amount sized to status & "face"</td><td>Ritual renews bonds and displays status</td></tr>
+    </table></div>
+    <h3>Measuring culture (Mohr et al. 2019)</h3>
+    <div class="grid3">
+      <div class="card"><span class="label">In people</span><h4>Thought · Talk · Action</h4><p><b>Thought</b>: surveys, experiments, IAT/AMP. Vaisey: forced‑choice items tap fast "gut" cognition; interviews tap slow deliberation (later: a continuum). Srivastava & Banaji: implicit self‑concept predicted real collaboration; self‑report didn't.</p><p><b>Talk</b>: interviews → idealized accounts, not behaviour predictions ("Talk Is Cheap", Jerolmack & Khan).</p><p><b>Action</b>: participant observation, digital traces. Polanyi: practice is tacit. Wacquant's boxing gym.</p></div>
+      <div class="card"><span class="label">In objects</span><h4>Production · Diffusion · Consumption</h4><p>Production of culture: organizations & industry shape what's new. Peterson & Berger: Billboard chart turnover; indie labels as talent scouts.</p><p>Diffusion: adopters become adapters (The Nanny abroad).</p><p>Consumption: authenticity signalled by object features (grime & cheap beer in a blues club).</p></div>
+      <div class="card"><span class="label">In relationships</span><h4>Interaction · Networks · Fields</h4><p>Conversation analysis, Goffman. Network tools on people and texts (topic models, word embeddings; Bail's "cultural betweenness").</p><p>Bourdieu's fields mapped with (multiple) correspondence analysis.</p></div>
+    </div>
+  </div></details>
+
+  <details class="lec"><summary>L3 · Socialization</summary><div class="inner">
+    <div class="mind">
+      <div class="core">Socialization = lifelong learning of culture</div>
+      <div class="branch"><h4>Nature vs nurture</h4><ul>
+        <li>19th c.: differences explained by nature (biological racism, Darwin quote).</li>
+        <li>20th c.: Watson — behaviour is learned (Little Albert, unethical).</li>
+        <li>"Nurture is our nature"; like the oranges, behaviour is shaped by environment.</li>
+        <li>Giddings (1897): theory of socialization = "most important part" of sociology.</li></ul></div>
+      <div class="branch b2"><h4>Agents</h4><ul>
+        <li><b>Family</b>: most important; children <i>tend</i> to conform (a tendency, not copying). Politics, gender roles, religion…</li>
+        <li><b>School</b>: wider social world, <b>hidden curriculum</b>, first bureaucracy, teachers as role models.</li>
+        <li><b>Peers</b>: escape adult supervision; <b>anticipatory socialization</b> (groups you want to join).</li>
+        <li><b>Mass media</b>; new: social media, video games; the <b>state</b> (direct/indirect agent).</li></ul></div>
+      <div class="branch b3"><h4>Critique & Guhin et al.</h4><ul>
+        <li>Parsons: learning "requisite orientations" for a role → seen as <b>cultural downloading</b>.</li>
+        <li>Missing: <b>agency, incoherence, conflict</b>. Lareau: children are active; relation is reciprocal.</li>
+        <li>Guhin: keep the term, drop functionalist baggage (postfunctionalist).</li></ul></div>
+      <div class="branch b4"><h4>Life course & data</h4><ul>
+        <li><b>Primary</b> (childhood, family) vs <b>secondary</b> (later, outside family). Resocialization: university, job, migration (HKDSE MCQs → essays).</li>
+        <li>Kiley & Vaisey (2020): adult culture mostly settled (change &lt;1%/item).</li>
+        <li>Y = α + βX + γZ + ε: β = socialization effect; Z = selection (homophily); heterogeneous β; timing.</li></ul></div>
+    </div>
+    <h3>Research designs (weak → strong causal claims)</h3>
+    <div class="tbl plate" style="padding:0"><table>
+      <tr><th>Design</th><th>Example</th><th>Limit</th></tr>
+      <tr><td>Cross‑sectional survey</td><td>ISSP 2018 parent–child religion</td><td>Selection, reverse causality, recall bias</td></tr>
+      <tr><td>Panel data</td><td>Kiley & Vaisey 2020; Broćić & Miles 2021 (college & morals)</td><td>Attrition; exposure still self‑selected</td></tr>
+      <tr><td>Natural experiment</td><td>Cantoni et al. 2017: China's curriculum reform → political attitudes (diff‑in‑diff by cohort/province)</td><td>Few shocks; local effects</td></tr>
+      <tr><td>Online field experiment</td><td>Bail et al. 2018 (opposing views on Twitter); Guess et al. 2023 (Facebook/Instagram feeds)</td><td>Platform access; short‑term; ethics</td></tr>
+    </table></div>
+    <div class="note"><b>Interaction vs social influence vs socialization</b> — likely MCQ. Interaction = any exchange, one encounter, ends with it. Social influence = change in attitude/behaviour caused by others, can be momentary (Asch), fades when others leave, one specific behaviour. Socialization = learning & internalizing culture, prolonged and repeated, <b>persists without the agent</b>, <b>carries over to new situations</b>. <span class="zh">护士换医院仍保持习惯 → socialization（模拟题6）。</span></div>
+    <div class="ex"><b>Reading patterns backwards</b>: data → pattern (gap by gender/class) → mechanism (socialization) → test (does the gap track exposure?). Bos et al. 2020: girls show less political ambition already in elementary school. Calarco 2018: middle‑class pupils ask teachers for help, working‑class pupils try not to bother them. <b>But</b> a group gap is not proof of socialization: rivals include discrimination, resources, institutional rules. Avoid deficit thinking.</div>
+  </div></details>
+
+  <details class="lec"><summary>L4 · Social Interaction in Everyday Life</summary><div class="inner">
+    <div class="mind">
+      <div class="core">Social interaction = how people act & react in relation to others</div>
+      <div class="branch"><h4>Structure → status</h4><ul>
+        <li>Social structure: rules & building blocks (Sewell: like grammar; practice like speech).</li>
+        <li><b>Status</b>: a position (nominal) or rank (ordinal). Ascribed vs achieved (Instagram followers: "it depends").</li>
+        <li><b>Status set</b>: all statuses at one time. <b>Master status</b>: shapes your whole identity.</li></ul></div>
+      <div class="branch b2"><h4>Role</h4><ul>
+        <li>Status = what you <i>are</i>; role = what you <i>do</i>.</li>
+        <li><b>Role set</b>: many roles of one status.</li>
+        <li><b>Role conflict</b>: roles of <b>two+ statuses</b> clash (student vs part‑time worker).</li>
+        <li><b>Role strain</b>: roles of <b>one status</b> clash (McDonald's cashier + cook; tutor as mentor + strict grader).</li></ul></div>
+      <div class="branch b3"><h4>Goffman: dramaturgy</h4><ul>
+        <li>Status = part in a play; role = script. <b>Impression management</b>.</li>
+        <li>Front stage, backstage, off‑stage (see diagram). Frank Abagnale in "Catch Me If You Can".</li></ul></div>
+      <div class="branch b4"><h4>Reality & machines</h4><ul>
+        <li><b>Social construction of reality</b>: Magritte's pipe, "Life Is Beautiful", gender.</li>
+        <li><b>Thomas theorem</b>: defined as real → real in consequences. Self‑fulfilling prophecy (Merton 1948).</li>
+        <li><b>ANT</b> (Latour, Callon, Law); Tsvetkova et al. 2024.</li></ul></div>
+    </div>
+    <h3>Goffman's stage</h3>
+    <div class="plate"><div class="stage">
+      <div class="front"><b>Front stage</b>Actor faces the audience; follows shared norms. Waiter in the dining room; lecturer in class; Frank playing pilot.</div>
+      <div class="back"><b>Backstage</b>Drop the act, show real feelings, rehearse. Audience not allowed. The kitchen.</div>
+      <div class="off"><b>Off‑stage</b>Outsiders not part of the performance, may not even know it exists.</div>
+    </div></div>
+    <h3>Role strain at McDonald's (boat)</h3>
+    <div class="ex">Macro: one status, two roles (cashier + cook) → ① worker feels role strain (two sets of expectations at once) → ② switches tasks, makes mistakes, burns out, quits → ③ slow service, errors, turnover → macro: lower profit. <b>Fix at box 1</b>: split into two statuses with specialised roles. <span class="zh">从宏观的岗位设计入手打断链条。</span></div>
+    <h3>Thomas theorem in action</h3>
+    <div class="grid3">
+      <div class="card"><h4>Bank run</h4><p>Rumour → everyone withdraws → a healthy bank really fails. Merton's self‑fulfilling prophecy; SVB 2023 (≈$42bn in one day).</p></div>
+      <div class="card"><h4>Pygmalion effect</h4><p>Rosenthal & Jacobson 1968: randomly picked "bloomers" got more teacher attention → larger gains.</p></div>
+      <div class="card"><h4>HK toilet paper, Feb 2020</h4><p>Rumour of shortage → panic buying → empty shelves despite enough supply.</p></div>
+    </div>
+    <h3>Are machines part of interaction?</h3>
+    <div class="vs"><div class="t">Two answers</div>
+      <div><b>No — machines are tools</b><br>Interaction needs meaning: both sides interpret each other. A kiosk understands nothing; we act <i>through</i> it. (Weber, symbolic interactionism, Goffman)</div>
+      <div><b>Yes — machines take part</b><br>If something changes the course of action, it is part of the interaction. (Latour, ANT)</div></div>
+    <div class="grid2">
+      <div class="card"><h4>ANT in four words</h4><p><b>Sociotechnical networks</b>: the social = links between humans and non‑humans. <b>Symmetry</b>: same vocabulary for both. <b>Actors</b>: anything with effects (person, kiosk, speed bump). <b>Delegation</b>: a speed bump does the police officer's job.</p></div>
+      <div class="card"><h4>Textbook add‑ons (Macionis ch. 6)</h4><p>Ethnomethodology (Garfinkel: break rules to reveal them), role exit, idealization, embarrassment & tact, nonverbal communication & personal space, social construction of emotions, language and gender, humor.</p></div>
+    </div>
+  </div></details>
+
+  <details class="lec"><summary>Textbook quick sheet (Macionis ch. 3, 5, 6)</summary><div class="inner">
+    <p>The teacher said the textbook is supporting material. These are the textbook terms most likely to appear as distractors. <span class="zh">课本里最可能变成干扰选项的术语。</span></p>
+    <div class="grid2">
+      <div class="card"><h4>Ch. 3 Culture</h4><ul class="tight">
+        <li>Sapir–Whorf thesis: language shapes how we see the world.</li>
+        <li>Ideal vs real culture.</li>
+        <li>High vs popular culture; subculture vs counterculture; multiculturalism.</li>
+        <li>Cultural change: invention, discovery, diffusion; <b>cultural lag</b> (Ogburn).</li>
+        <li><b>Ethnocentrism</b> (judge others by your culture) vs <b>cultural relativism</b> (judge by their own standards).</li>
+        <li>Cultural universals (Murdock).</li></ul></div>
+      <div class="card"><h4>Ch. 5 Socialization</h4><ul class="tight">
+        <li>Freud: id, ego, superego. Piaget: sensorimotor → preoperational → concrete → formal operational.</li>
+        <li>Kohlberg: preconventional → conventional → postconventional. Gilligan: justice vs care.</li>
+        <li><b>Mead</b>: self = I + me; imitation → play → game → generalized other. <b>Cooley</b>: looking‑glass self.</li>
+        <li>Erikson's 8 stages. Isolation cases (Anna, Genie; Harlow's monkeys).</li>
+        <li>Cohort; <b>total institutions</b> (Goffman) & resocialization.</li></ul></div>
+    </div>
+  </div></details>
+</section>
+
+<!-- ============ READINGS ============ -->
+<section class="view" id="v-readings" hidden>
+  <h2>The three readings <span class="zh">三篇论文（作文题）</span></h2>
+  <p>For each paper: the one‑sentence thesis, a picture to remember it by, the core concepts, the authors' own examples, then fresh Hong Kong examples you can use in an essay. <span class="zh">每篇：一句话主论点 → 比喻 → 核心概念 → 原文例子 → 香港/现实例子 → 怎么套用。</span></p>
+
+  <!-- LIZARDO -->
+  <h2 id="r-liz">Lizardo (2017) · Improving Cultural Analysis</h2>
+  <p class="mono" style="color:var(--ink-2)">American Sociological Review 82(1): 88–115</p>
+  <div class="note"><b>Thesis in one sentence.</b> People carry culture in two separate forms — <b>declarative</b> "know‑that" (fast to learn, can be said) and <b>nondeclarative</b> "know‑how" (slowly built through repeated experience, lives in habits and the body) — and because the two are learned through different pathways, they are often <b>dissociated</b>: what people <i>say</i> and what they <i>do</i> can come apart.<br><span class="zh">人身上的文化有两种形态：能说出来的"知道是什么"和身体里的"知道怎么做"。两者学习途径不同，所以经常脱节——说的和做的不一样，这不是虚伪，而是两套系统。</span></div>
+
+  <div class="plate"><span class="label">Picture it · 比喻</span>
+    <p><b>Learning to drive.</b> In driving school you memorise rules: "mirror, signal, turn" (declarative, learnt in one lesson). After two years the body just does it (nondeclarative, built from thousands of repetitions). You still <i>know</i> the rule, but it is not what drives the car. A person who only read the manual can explain driving perfectly and still crash. <span class="zh">学车：交规一节课就记住（陈述性），真正会开靠上千次重复（非陈述性）。只读过手册的人能讲得头头是道，但上路照样出错。</span></p>
+  </div>
+
+  <div class="plate"><span class="label">Diagram · Figure 1 & 2 rebuilt</span>
+    <div class="tree">
+      <div class="n" style="background:var(--ink);color:var(--paper);border-color:var(--ink)"><b>CULTURE</b></div>
+      <div class="stem"></div>
+      <div class="lvl">
+        <div><div class="n pub"><b>Public culture</b><br>symbols, discourses, institutions, codes<br><span class="zh">外在于个人</span></div></div>
+        <div><div class="n"><b>Personal culture</b><br>culture inside the person</div><div class="stem"></div>
+          <div class="lvl" style="gap:8px">
+            <div style="flex-basis:140px"><div class="n dec"><b>Declarative</b><br>know‑that · fast learning · few exposures · explicit · slow, deliberate use · "offline"</div></div>
+            <div style="flex-basis:140px"><div class="n non"><b>Nondeclarative</b><br>know‑how · slow learning · repeated exposure · implicit · fast, automatic use · "online"</div></div>
+          </div></div>
+      </div>
+    </div>
+    <p style="margin-top:14px"><b>The "cultural triangle"</b> — three relations any cultural analysis must consider: <b>(a)</b> declarative ↔ nondeclarative inside the person (Vaisey's dual process); <b>(b)</b> declarative ↔ public culture (Swidler's toolkit, strong program); <b>(c)</b> nondeclarative ↔ public culture (practice theory: Bourdieu's habitus–field). Each can be <b>strongly</b> or <b>weakly coupled</b>. <span class="zh">三组关系，各自可以"强耦合"或"弱耦合"。</span></p>
+  </div>
+
+  <h3>Key concepts</h3>
+  <div class="tbl plate" style="padding:0"><table>
+    <tr><th>Concept</th><th>Meaning</th><th>中文</th></tr>
+    <tr><td>Declarative culture</td><td>Explicit, symbolically mediated (mostly via language); acquired fast, even from one exposure ("flashbulb" memories); stored in semantic memory; transparent ("I know that I know it"); used slowly for reasoning, justification, narratives, "vocabularies of motive".</td><td>陈述性文化：价值观、信念、意识形态、能用语言表达的</td></tr>
+    <tr><td>Nondeclarative culture</td><td>Implicit, durable cognitive‑emotive associations, bodily comportment, perceptual and motor skills; acquired only via slow learning after many repeated, consistent exposures; "fire together, wire together"; used fast and automatically.</td><td>非陈述性文化：技能、习惯、身体反应、隐性联想</td></tr>
+    <tr><td>Correspondence principle</td><td>Culture is encoded in the same format in which it was encountered: explicit exposure → declarative; experiential, repeated exposure → nondeclarative. Rejects the "linguistic fallacy" that all culture is stored like language.</td><td>对应原则：怎么学到的，就以什么形态存储</td></tr>
+    <tr><td>Redundant encoding</td><td>The same domain can be stored in both forms (an expert driver still knows the rules).</td><td>冗余编码：两种形态可同时存在</td></tr>
+    <tr><td>Dissociation / weak coupling</td><td>The two forms can come apart: people "know more than they can tell" (Polanyi) and "tell more than they know how".</td><td>解离：说的≠做的</td></tr>
+    <tr><td>Doxa / common sense</td><td>Nondeclarative knowledge so taken for granted it never reaches awareness — "the way things are".</td><td>习以为常、视为理所当然</td></tr>
+    <tr><td>Redescription</td><td>Nondeclarative culture can be partly put into words (e.g., by interviews), but this is effortful and loses what makes it close to action.</td><td>把"会做的"说出来，必然有损耗</td></tr>
+  </table></div>
+
+  <h3>Lizardo's own examples (the "paradoxes" he dissolves)</h3>
+  <div class="grid2">
+    <div class="card"><h4>1 · Achievement–aspiration paradox</h4><p>Black and Hispanic youth in the US report aspirations as high as white youth, yet achieve less; Asian American youth report modest aspirations and outperform. "Oppositional culture" (Ogbu) and "Asian values" theories fail because they look only at <b>declarative</b> attitudes. The real difference lies in <b>nondeclarative</b> school know‑how ("noncognitive skills", self‑control, habits rewarded by teachers), which needs repeated exposure and so tracks family resources.</p><p class="zh">"如果你只靠陈述性文化解释，就会死在陈述性文化上。"想要好成绩的愿望人人都有（被美国成功话语同质化），差别在"会读书的身体习惯"。</p></div>
+    <div class="card"><h4>2 · Autonomy vs obedience (Kohn; Weininger & Lareau 2009)</h4><p>Middle‑class parents <i>say</i> they value autonomy and negotiate verbally, but in practice they enrol kids in structured, adult‑supervised activities that train conformity to institutional authority. Working‑class parents <i>say</i> "obey", but children have more practical autonomy in unstructured play. Not a paradox: two different enculturation channels.</p><p class="zh">嘴上教"自主"，身体训练的却是"适应权威"——这正是中产孩子在学校吃得开的原因。</p></div>
+    <div class="card"><h4>3 · Cultural omnivores (Peterson & Kern)</h4><p>Elites declare openness to all genres ("I like everything"), yet engage with culture in class‑marked ways (preferring complexity, authorial intention). Declarative discourse of tolerance, nondeclarative distinction.</p></div>
+    <div class="card"><h4>4 · Beyond groupism</h4><p>Use the same kind of mechanism to explain both advantage and disadvantage; don't use "culture" for Asians' success but "structure" for Black underachievement. Link each piece of personal culture to public culture separately, as an empirical hypothesis.</p></div>
+  </div>
+
+  <h3>Use it on a social issue <span class="zh">怎么套用</span></h3>
+  <div class="grid2">
+    <div class="ex"><b>Environmental behaviour in HK.</b> Most people agree "we should reduce plastic" (declarative, from campaigns, one exposure enough). But grabbing a plastic bag at the wet market or ordering takeaway is a nondeclarative routine. Policy: change the environment so new habits form through repetition (plastic‑bag levy, default "no cutlery"), not more slogans.</div>
+    <div class="ex"><b>Gender equality at home.</b> Young couples say housework should be shared; in practice women still do more. The "know‑how" of who notices the dirty dishes was learnt over a childhood of watching mothers. Surveys capture the saying; time‑use diaries capture the doing.</div>
+    <div class="ex"><b>DSE and university.</b> Grassroots students believe "education changes fate" as strongly as anyone, but may lack the embodied know‑how of asking tutors, networking, office hours (cf. Calarco). Inequality hides in the nondeclarative layer.</div>
+    <div class="ex"><b>Measuring discrimination.</b> Landlords say they never consider ethnicity (declarative) but reply less to South Asian names in an audit study (nondeclarative practice). Mock Q5. Choose methods that match the form of culture.</div>
+  </div>
+
+  <!-- GUHIN -->
+  <h2 id="r-guh">Guhin, Calarco & Miller‑Idriss (2021) · Whatever Happened to Socialization?</h2>
+  <p class="mono" style="color:var(--ink-2)">Annual Review of Sociology 47: 109–129</p>
+  <div class="note"><b>Thesis in one sentence.</b> Socialization fell out of favour because it was tied to Parsons' functionalism (a "cultural downloading" model that ignored power, agency, heterogeneity and fed "culture of poverty" victim‑blaming), but most critiques hit <b>Parsons, not the process</b>; dropping the word costs sociology <b>power, history and transferability</b>, so we should keep it in a <b>postfunctionalist</b> form.<br><span class="zh">社会化这个词因为和帕森斯功能主义绑在一起而失宠，但批评针对的是功能主义而不是社会化过程本身。扔掉这个词会丢掉"权力、历史、可迁移性"，所以应该以"后功能主义"的方式把它带回来。</span></div>
+
+  <div class="plate"><span class="label">Picture it · 比喻</span>
+    <p><b>Downloading vs learning a language.</b> The old model treats a child like a phone downloading an app: society installs values, the child runs them. The new model is more like a child learning Cantonese in a Mandarin‑speaking family in Hong Kong: she absorbs, mixes, resists and invents slang with friends (agency, heterogeneity) — but she did not choose which languages surround her, and some accents carry more status (power). Guhin says: keep the word "socialization", but use it like language learning, not app downloading. <span class="zh">旧模型像手机下载APP；新模型像在香港普通话家庭长大的孩子学粤语——会吸收、混用、反抗、和朋友造新词（能动性、异质性），但她没得选周围是什么语言，而且某些口音更"高级"（权力）。</span></p>
+  </div>
+
+  <div class="plate"><span class="label">Timeline · rise, fall, comeback</span>
+    <div class="tl">
+      <div class="t"><b>1890s · Origins</b>Simmel & Giddings put socialization at the core of sociology.</div>
+      <div class="t"><b>1951 · Peak</b>Parsons: learning orientations needed to function in a role → order & stability.</div>
+      <div class="t"><b>1960s–70s · Demise</b>Functionalism discredited; Moynihan report (1965) taints the term.</div>
+      <div class="t"><b>1970s–2000s · Replacements</b>Habitus/field, cultures of resistance, "becoming a…", interpretive reproduction.</div>
+      <div class="t"><b>2021 · Comeback?</b>Postfunctionalist socialization.</div>
+    </div>
+    <p class="zh" style="margin-top:10px">证据：作者统计了 708 篇文章（1912–2020）。这个词的使用随结构功能主义一起兴衰；在 ASR、AJS 这类顶刊里很少用，但在 <i>Sociology of Education</i> 和 <i>Ethnic and Racial Studies</i> 这类子领域期刊里一直在用——恰好是权力不平等最明显的领域。</p>
+  </div>
+
+  <h3>Four lines of critique (against Parsons)</h3>
+  <div class="grid2">
+    <div class="card"><h4>Power</h4><p>Parsons explained order by shared values; critics: when values align, it is because of power (Giddens, Cohen). Bourdieu: conflict is source and outcome.</p></div>
+    <div class="card"><h4>Agency</h4><p>Wrong (1976): the "oversocialized" actor has no inner conflict. Childhood scholars (Corsaro, Pugh): children interpret and resist adult culture.</p></div>
+    <div class="card"><h4>Heterogeneity</h4><p>Gender is an ongoing interactional achievement, not a role fixed in childhood (West & Zimmerman, "doing gender"). People carry diverse toolkits (Swidler).</p></div>
+    <div class="card"><h4>Politics</h4><p>"Culture of poverty" (Lewis 1959; Moynihan 1965) used socialization to blame families → <b>deficit thinking</b>, hiding racism and resource hoarding.</p></div>
+  </div>
+
+  <h3>Alternatives: new words, same process</h3>
+  <div class="tbl plate" style="padding:0"><table>
+    <tr><th>Concept</th><th>Who</th><th>What it adds</th><th>Where socialization hides</th></tr>
+    <tr><td>Habitus, field, capital</td><td>Bourdieu</td><td>Class conflict as source & outcome</td><td>Dispositions acquired through upbringing</td></tr>
+    <tr><td>Culture of resistance</td><td>Willis ("the lads"); Birmingham school</td><td>Youth resist school yet reproduce class</td><td>Learning inside peer subcultures</td></tr>
+    <tr><td>"Becoming a…", moral career</td><td>Becker (marihuana user); Goffman (mental patient)</td><td>Self as contingent interactional achievement</td><td>Habituation through routines & significant others</td></tr>
+    <tr><td>Interpretive reproduction</td><td>Corsaro</td><td>Children as agents reworking adult culture</td><td>Collective, peer‑based learning</td></tr>
+  </table></div>
+
+  <h3>What gets lost without the word</h3>
+  <div class="grid3">
+    <div class="card" style="border-top:4px solid var(--alert)"><h4>Power</h4><p>Socialization captures "being brought into a social world not of your own choosing, over which you lack control" — children in families, students in classrooms, people of colour in White settings. Racial socialization (fathers preparing sons for racism), gendered socialization in preschool (Gansen), hidden curriculum harming Black children (Tyson).</p></div>
+    <div class="card" style="border-top:4px solid var(--hl)"><h4>History</h4><p>Focusing only on agency and toolkits treats culture as "simply available". We lose <i>how people came to know</i> the culture they use — the "why", not only the "how" (Vaisey).</p></div>
+    <div class="card" style="border-top:4px solid var(--teal)"><h4>Transferability</h4><p>Bourdieu's vocabulary is "idiosyncratic and unwieldy" (citing Lizardo); Corsaro's term never left childhood studies. "Socialization" is understood across psychology, political science, education.</p></div>
+  </div>
+
+  <h3>New directions (postfunctionalist agenda)</h3>
+  <ul class="tight">
+    <li><b>Bodies and brains</b>: cognitive science, dual‑process models, Lizardo (2017) — links directly to reading 1. Secondary socialization of adults (Luft: combat socialization produces dehumanization; Winchester: adult converts).</li>
+    <li><b>Language & conversation analysis</b>: language socialization is embodied and less one‑sided than it looks.</li>
+    <li><b>Pragmatism</b> (Dewey): habits are means, and break down when obstructed → reflexivity and change.</li>
+    <li><b>Values</b> (Miles 2015): values sit in automatic cognition and are causally linked to behaviour.</li>
+    <li><b>Political socialization & ideology</b>: Bos et al. 2020 (boys show more political ambition already in elementary school); immigrants' political socialization.</li>
+    <li><b>Model</b>: Winchester & Guhin (2019) "normative frames" — evangelical students and converts learn not just a tool (prayer) but when and how to use it and how to judge success, inside an organization's power.</li>
+  </ul>
+
+  <h3>Use it on a social issue</h3>
+  <div class="grid2">
+    <div class="ex"><b>Ethnic minority students in HK schools.</b> South Asian students are socialized into Chinese‑language school norms they did not choose (power). They adapt, mix languages, form peer cultures (agency, heterogeneity). Blaming "their family culture" for low results would repeat the culture‑of‑poverty mistake; look at Chinese‑language policy and school banding.</div>
+    <div class="ex"><b>Mainland students at a HK university.</b> Secondary socialization: new norms of class discussion, Cantonese social life. Not downloading — they choose, resist, form their own groups. Yet institutional power (grading, language) shapes what counts as success.</div>
+    <div class="ex"><b>Gender and STEM.</b> Girls' lower science aspirations: socialization through family, school, social‑media feeds. But gender is "done" repeatedly in interaction, so change is possible; and gaps may also reflect discrimination, not only learning.</div>
+    <div class="ex"><b>Intergenerational poverty (劏房 families).</b> Avoid deficit thinking: don't say poor families "fail to socialize" kids. Show how housing, school resources and labour markets shape what children learn and what they can use.</div>
+  </div>
+
+  <!-- TSVETKOVA -->
+  <h2 id="r-tsv">Tsvetkova, Yasseri, Pescetelli & Werner (2024) · A New Sociology of Humans and Machines</h2>
+  <p class="mono" style="color:var(--ink-2)">Nature Human Behaviour 8: 1864–1876</p>
+  <div class="note"><b>Thesis in one sentence.</b> Humans and machines (bots, algorithms, robots) now form <b>one social system</b> of H–H, H–M and M–M interactions; because machines behave differently and change how humans behave, the <b>collective outcomes cannot be deduced from human or machine behaviour alone</b>, so we need a new sociology that studies these hybrid systems as complex systems.<br><span class="zh">人和机器组成同一个社会系统。机器的行为不同，又会改变人的行为，所以集体结果无法从个体行为简单推出——需要一门研究"人机混合社会"的新社会学。</span></div>
+
+  <div class="plate"><span class="label">Picture it · 比喻</span>
+    <p><b>A mahjong table with one robot player.</b> Even if nobody knows the robot is there, the game changes because it plays differently (1st order). If players know, they bluff and cooperate differently with it (2nd order). And the humans start playing differently with <i>each other</i> after watching it (3rd order) — like Go players after AlphaGo. <span class="zh">一张麻将桌上坐着一个机器人：即使没人知道，牌局也会变（第一层）；知道后人对它的打法不同（第二层）；看过它打牌后，人和人之间的打法也变了（第三层）——就像AlphaGo之后的棋手。</span></p>
+  </div>
+
+  <div class="plate"><span class="label">Diagram · one hybrid network</span>
+    <div class="svgbox"><svg viewBox="0 0 640 230" width="100%" style="max-width:640px;min-width:420px;display:block;margin:auto" role="img" aria-label="Network of humans (circles) and machines (squares) with three kinds of ties">
+      <g stroke="var(--ink-2)" stroke-width="2" fill="none">
+        <line x1="90" y1="70" x2="200" y2="50"/><line x1="90" y1="70" x2="140" y2="160"/><line x1="200" y1="50" x2="140" y2="160"/>
+      </g>
+      <g stroke="var(--teal)" stroke-width="2.5" stroke-dasharray="6 4" fill="none">
+        <line x1="200" y1="50" x2="320" y2="110"/><line x1="140" y1="160" x2="320" y2="110"/><line x1="320" y1="110" x2="440" y2="60"/>
+      </g>
+      <g stroke="var(--machine)" stroke-width="3" fill="none">
+        <line x1="320" y1="110" x2="420" y2="170"/><line x1="440" y1="60" x2="420" y2="170"/>
+      </g>
+      <g stroke="var(--teal)" stroke-width="2.5" stroke-dasharray="6 4" fill="none"><line x1="440" y1="60" x2="550" y2="90"/><line x1="420" y1="170" x2="550" y2="90"/></g>
+      <g fill="var(--hl-soft)" stroke="var(--ink)" stroke-width="2">
+        <circle cx="90" cy="70" r="18"/><circle cx="200" cy="50" r="18"/><circle cx="140" cy="160" r="18"/><circle cx="550" cy="90" r="18"/>
+      </g>
+      <g fill="var(--machine-soft)" stroke="var(--machine)" stroke-width="2.5">
+        <rect x="302" y="92" width="36" height="36" rx="4"/><rect x="422" y="42" width="36" height="36" rx="4"/><rect x="402" y="152" width="36" height="36" rx="4"/>
+      </g>
+      <g font-size="12" fill="var(--ink)">
+        <text x="40" y="215">● human</text><text x="130" y="215" fill="var(--machine)">■ machine</text>
+        <text x="245" y="215" fill="var(--ink-2)">— H–H</text><text x="330" y="215" fill="var(--teal)">- - H–M</text><text x="430" y="215" fill="var(--machine)">━ M–M</text>
+      </g>
+    </svg></div>
+    <p>From <b>machines as media</b> (tools humans communicate through) to <b>machines as actors</b> (many, independent, heterogeneous agents that act, react and interact). The aggregate is a <b>complex system</b>: network effects and nonlinear dynamics. <span class="zh">从"机器是媒介"到"机器是行动者"。</span></p>
+  </div>
+
+  <h3>How humans and machines differ</h3>
+  <div class="vs"><div class="t">Machines vs humans</div>
+    <div><b>Machines</b>: predictable, persistent, precise, fast, better informed (global information), <b>less adaptable</b> and less susceptible to influence.</div>
+    <div><b>Humans</b>: local information, satisfice, make errors, learn and adapt, succumb to peer pressure, yet stubborn; cognitive biases (which algorithms trained on human data may copy).</div></div>
+  <div class="grid2">
+    <div class="card"><h4>We treat machines like people… (CASA)</h4><p>Politeness, reciprocity, gender & racial stereotypes, distress when a robot is mistreated; robots cause informational & normative conformity; we often trust algorithmic advice more than human advice.</p></div>
+    <div class="card"><h4>…but not quite</h4><p>Flatter emotions (less gratitude, anger, fairness); more rational and selfish — cooperate less, exploit more; judge machine mistakes more harshly; groups even bully robots.</p></div>
+  </div>
+
+  <h3>Three orders of difference <span class="zh">三层差异（高频考点）</span></h3>
+  <div class="orders">
+    <div class="ord"><span class="n">1st</span><div><b>Machines behave differently from humans.</b> Even if nobody notices the bots, outcomes change. <span class="zh">机器本身行为不同。</span></div></div>
+    <div class="ord"><span class="n">2nd</span><div><b>Humans interact differently with machines; machines interact with each other</b>, even when not designed to (Wikipedia bots reverting each other). <span class="zh">人对机器的互动方式不同；机器之间也互动。</span></div></div>
+    <div class="ord"><span class="n">3rd</span><div><b>Machines change how humans behave and interact with each other.</b> Just suspecting a bot is present changes behaviour; AlphaGo changed human Go strategies. <span class="zh">机器的存在改变了人与人之间的互动。</span></div></div>
+  </div>
+
+  <h3>Five classic situations, now hybrid</h3>
+  <div class="sit">
+    <div class="card"><h4>Competition</h4><p>Trading algorithms raise efficiency and liquidity but can amplify crashes (2010 flash crash); pricing algorithms can learn to collude; sniping bots drive amateurs away.</p></div>
+    <div class="card"><h4>Coordination</h4><p>Slightly random ("noisy") bots in central positions help stuck groups reach agreement faster. Human‑imitating bots that don't adapt make things worse.</p></div>
+    <div class="card"><h4>Cooperation</h4><p>A few hidden, persistently cooperative bots raise group cooperation (humans wait for others to cooperate first). Known bots: people cooperate less.</p></div>
+    <div class="card"><h4>Contagion</h4><p>Twitter bots amplify misinformation, negativity, polarization. <b>Weak</b> bots spread further because they don't alienate followers → cascades. Spiral of silence.</p></div>
+    <div class="card"><h4>Collective decisions</h4><p>Machines add diversity: AlphaGo pushed Go players to new strategies; hybrid human+machine diagnosis and citizen science improve accuracy but can lower volunteer engagement.</p></div>
+  </div>
+  <div class="note"><b>What a machine does depends on</b>: how many there are · where they sit in the network · whether they are <b>covert or overt</b> (covert bots are more problematic). Four case boxes: high‑frequency trading, Twitter, Wikipedia (registered, diverse bots → resilient), Reddit (AutoMod; humans copy bots' words and sentiment).</div>
+  <div class="grid3">
+    <div class="card"><span class="label">Research</span><p>Agent‑based models distinguishing human and bot agents; experiments comparing H–M, human‑only and machine‑only groups; field interventions; ethics of covert bots.</p></div>
+    <div class="card"><span class="label">Design</span><p>Design machines separately for H–M and M–M interaction; rule hierarchies (adapt Asimov's laws); local culture; complex‑adaptive principles (negative feedback, modularity).</p></div>
+    <div class="card"><span class="label">Policy</span><p>Treat AI as a <b>multiplicity</b> of machines, not one existential threat. Protect <b>diversity</b> of H–M ecologies (similar algorithms → flash crashes); demand resilience; anticipate co‑development (care robots reduce caregivers' empathy).</p></div>
+  </div>
+  <div class="ex"><b>Link to Coleman's boat</b> (the teacher made this link on the slide): machines enter at the micro level, but their effects show up at the macro level. A few weak social‑media bots → small nudges to individual users → cascades through the network → polarized public opinion. <span class="zh">作文里把这条链画出来，立刻显得有理论深度。</span></div>
+
+  <h3>Use it on a social issue</h3>
+  <div class="grid2">
+    <div class="ex"><b>Misinformation & elections.</b> Covert bots retweet partisan content, target central users; weak direct influence, strong collective effect via cascades and spiral of silence → polarization (2016 US election, Brexit, Catalonia).</div>
+    <div class="ex"><b>Care robots for HK's ageing population.</b> Robots can raise social interaction among older adults (contagion), but outsourcing care can reduce caregivers' empathy (co‑development). Policy: keep human carers in the loop.</div>
+    <div class="ex"><b>Generative AI in university study.</b> Students trusting ChatGPT (algorithm appreciation) → similar answers across a class → less diversity (collective decision‑making); AI may also nudge human discussion norms (3rd order).</div>
+    <div class="ex"><b>Food‑delivery and ride‑hailing platforms.</b> Pricing and dispatch algorithms compete and coordinate with riders and restaurants; algorithmic collusion can raise prices; riders change how they treat each other (sharing tips to "beat" the algorithm).</div>
+  </div>
+
+  <h3>How the three readings connect <span class="zh">三篇如何串起来（综合题必备）</span></h3>
+  <div class="plate">
+    <p><b>Lizardo</b> explains <i>what</i> is learned (two forms of personal culture). <b>Guhin</b> explains <i>how</i> it is learned and why the concept matters (socialization, power, history). <b>Tsvetkova</b> adds a <i>new agent</i>: machines that act inside social systems. Example sentence: <i>"Recommendation algorithms are a new agent of socialization (Guhin): repeated feed exposure builds nondeclarative tastes and associations (Lizardo), and because bots interact with humans and each other, the aggregate effect on public opinion cannot be read off individual users (Tsvetkova)."</i></p>
+    <p class="zh">一句话串联：算法是新的社会化代理人（Guhin）；反复刷到的内容塑造非陈述性的品味和联想（Lizardo）；而机器与人、机器与机器的互动让总体结果无法从个体推出（Tsvetkova）。</p>
+  </div>
+</section>
+
+<!-- ============ CONFUSABLES ============ -->
+<section class="view" id="v-confuse" hidden>
+  <h2>Confusables <span class="zh">易混淆对比（MCQ失分重灾区）</span></h2>
+  <p>MCQ distractors are almost always the neighbour concept. Learn the <b>test question</b> in each pair. <span class="zh">每组记住"判断口诀"。</span></p>
+  <div id="vsList"></div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="view" id="v-cards" hidden>
+  <h2>Flashcards <span class="zh">记忆卡</span></h2>
+  <p>Tap the card to flip. Say the definition <i>and</i> an example out loud before flipping. <span class="zh">翻面前先口述定义和例子——主动回忆比重复阅读有效得多。</span></p>
+  <div class="fc-controls">
+    <label for="fcFilter" class="mono">Deck</label>
+    <select id="fcFilter" class="btn"></select>
+    <button class="btn" id="fcShuffle" type="button">Shuffle</button>
+    <span class="mono" id="fcCount" style="color:var(--ink-2)"></span>
+  </div>
+  <div class="fc" id="fc"><div class="fc-inner" id="fcInner" tabindex="0" role="button" aria-label="Flip card">
+    <div class="fc-face fc-front"><div class="term" id="fcTerm"></div><div class="src mono" id="fcSrc"></div></div>
+    <div class="fc-face fc-back" id="fcBack"></div>
+  </div></div>
+  <div class="fc-nav">
+    <button class="btn" id="fcPrev" type="button">← Prev</button>
+    <span><button class="btn" id="fcMiss" type="button">Again</button> <button class="btn primary" id="fcGot" type="button">Got it</button></span>
+    <button class="btn" id="fcNext" type="button">Next →</button>
+  </div>
+  <p class="mono" style="text-align:center;color:var(--ink-2)" id="fcTally"></p>
+</section>
+
+<!-- ============ MCQ ============ -->
+<section class="view" id="v-mcq" hidden>
+  <h2>MCQ practice <span class="zh">选择题练习</span></h2>
+  <p>The teacher's 10 mock questions plus predicted questions in the same scenario style. "Select all that apply" questions use checkboxes. <span class="zh">老师10道模拟题 + 同风格预测题。多选题用方框。</span></p>
+  <div class="fc-controls">
+    <label for="qFilter" class="mono">Show</label>
+    <select id="qFilter" class="btn">
+      <option value="all">All questions</option>
+      <option value="T">Teacher's mock only</option>
+      <option value="L1">Lecture 1</option><option value="L2">Lecture 2</option><option value="L3">Lecture 3</option><option value="L4">Lecture 4</option><option value="R">Readings</option>
+      <option value="wrong">My wrong answers</option>
+    </select>
+  </div>
+  <div id="qList"></div>
+  <div class="score"><span id="scoreTxt">0 / 0 answered</span><button class="btn" id="qReset" type="button">Reset answers</button></div>
+</section>
+
+<!-- ============ ESSAY ============ -->
+<section class="view" id="v-essay" hidden>
+  <h2>Essay predictions <span class="zh">开放题预测 + 示范</span></h2>
+  <p>The open‑ended questions ask you to <b>explain</b> a reading's argument, <b>exemplify</b> it, and <b>apply</b> it to a social issue. Use the same four moves every time. <span class="zh">每篇都用同一个四步框架。</span></p>
+  <div class="frame">
+    <div class="card"><b>D</b> · Define<p>State the reading's core argument in 1–2 sentences, with author & year.</p><p class="zh">定义：一两句点出作者主论点</p></div>
+    <div class="card"><b>M</b> · Mechanism<p>Explain the key concepts and how they work (use the paper's own terms).</p><p class="zh">机制：用原文术语解释</p></div>
+    <div class="card"><b>A</b> · Apply<p>Walk a concrete social issue through those concepts, step by step. Coleman's boat helps.</p><p class="zh">应用：具体社会议题，一步步套</p></div>
+    <div class="card"><b>L</b> · Limit / implication<p>One limitation, counter‑view, or policy/research implication.</p><p class="zh">局限或启示：一句批判或建议</p></div>
+  </div>
+  <div class="note"><b>Phrases that earn marks.</b> "Following Lizardo (2017), …" · "This illustrates a weak coupling between…" · "Guhin et al. (2021) would caution against deficit thinking here…" · "Postfunctionalist socialization allows for agency while recognising power…" · "In Tsvetkova et al.'s (2024) terms, this is a third‑order effect…" · "The collective outcome cannot be deduced from individual behaviour alone…"</div>
+  <div id="essayList"></div>
+</section>
+
+<footer>Built from your SOC611 Lecture 1–4 slides, the Macionis chapters, the three assigned readings, and the mock questions in Lecture 6 (pp. 1–19). Lecture 5 was not in the folder. <span class="zh">本页根据你上传的材料整理；第5讲不在文件夹里。</span></footer>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- routing ---------- */
+const views=["plan","lectures","readings","confuse","cards","mcq","essay"];
+function route(){
+  let h=(location.hash||"#plan").slice(1);
+  let anchor=null;
+  if(!views.includes(h)){ if(["r-liz","r-guh","r-tsv"].includes(h)){anchor=h;h="readings"} else h="plan"; }
+  views.forEach(v=>{document.getElementById("v-"+v).hidden=(v!==h)});
+  document.querySelectorAll("nav.tabs a").forEach(a=>{const on=a.getAttribute("href")==="#"+h;a.setAttribute("aria-current",on?"page":"false");if(on){const r=a.parentElement;r.scrollLeft=a.offsetLeft-r.clientWidth/2+a.clientWidth/2}});
+  if(anchor){const el=document.getElementById(anchor); if(el) el.scrollIntoView();} else window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+
+/* ---------- Coleman boat ---------- */
+const boats={
+ "Weber":{mc:"Calvinist doctrine: predestination, salvation uncertainty",ms:"Belief: worldly asceticism as a religious duty, a sign of grace",ma:"Methodical labour, frugality, reinvestment",mo:"Rise of modern rational capitalism",a1:"doctrine creates salvation anxiety",a2:"anxiety is channelled into disciplined, ascetic work",a3:"independent saving & reinvestment accumulate capital",agg:"Aggregation: ADDITIVE — no coordination needed"},
+ "J‑curve revolution":{mc:"Improving social & economic conditions",ms:"Rising expectations outpace gains → relative deprivation",ma:"Frustration → willingness to act",mo:"Collective mobilization / revolution",a1:"improvement raises what people feel they deserve",a2:"expectation gap → frustration → readiness to protest",a3:"frustration must be organized: networks, leaders, selective incentives",agg:"Aggregation: COORDINATED — must solve the free‑rider problem"},
+ "Segregation":{mc:"Mixed city; mild same‑group preferences",ms:"Each household sees its neighbourhood's mix",ma:"Move if 'unlike' share crosses personal threshold",mo:"Extreme citywide segregation nobody intended",a1:"households observe the current racial mix",a2:"threshold rule: move or stay",a3:"each move tips neighbours past their thresholds",agg:"Aggregation: THRESHOLD / CASCADE"},
+ "Panic myth":{mc:"Emergency (fire, attack)",ms:"Risk assessment, concern for others, rule‑following",ma:"Orderly movement, helping, queuing",mo:"Self‑organized, effective evacuation",a1:"threat activates social norms, not only self‑preservation",a2:"people draw on everyday scripts of cooperation",a3:"many rule‑followers produce order without a leader",agg:"Aggregation: EMERGENT / SELF‑ORGANIZING"},
+ "HK fertility (mock Q2)":{mc:"Rising housing prices in Hong Kong",ms:"Couples believe they cannot afford children",ma:"Delay or forgo childbirth",mo:"Very low fertility rate",a1:"housing prices → belief 'we can't afford a child' (this is mock Q2's answer)",a2:"belief → decision to delay or not have children",a3:"many individual decisions add up to the city's fertility rate",agg:"Aggregation: ADDITIVE"},
+ "Bots → polarization":{mc:"Covert social bots deployed on a platform",ms:"Users see more partisan, negative content; feel others agree",ma:"Share, react, or fall silent (spiral of silence)",mo:"Polarized public opinion",a1:"bots shape what each user is exposed to",a2:"weak nudges change sharing and willingness to speak",a3:"network cascades amplify small effects (Tsvetkova)",agg:"Aggregation: THRESHOLD / CASCADE"}
+};
+const bt=$("#boatTabs");
+function setBoat(k){const b=boats[k];document.querySelectorAll("#boat [data-k]").forEach(el=>el.textContent=b[el.dataset.k]);$("#a2").textContent=b.a2;$("#aggtag").textContent=b.agg;bt.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.textContent===k?"true":"false"))}
+Object.keys(boats).forEach(k=>{const b=document.createElement("button");b.type="button";b.className="pill";b.textContent=k;b.onclick=()=>setBoat(k);bt.appendChild(b)});
+setBoat("Weber");
+
+/* ---------- confusables ---------- */
+const vs=[
+ ["Role conflict vs role strain","<b>Role conflict</b>: clash between roles of <b>two or more statuses</b>. Student + part‑time worker; mother + manager.","<b>Role strain</b>: tension among roles of <b>one status</b>. Tutor as warm mentor + strict grader (mock Q7); cashier + cook.","口诀：数一数有几个 status。两个→conflict；一个→strain。"],
+ ["Situational vs action‑formation vs aggregation","<b>①Situational</b> macro→micro: structure shapes beliefs/options (housing prices → 'can't afford a child', mock Q2). <b>②Action‑formation</b> micro→micro: how a person decides given that belief.","<b>③Aggregation / transformation</b> micro→macro: individual actions combine into an outcome (additive, coordinated, threshold, emergent).","口诀：下去 ↓ ① · 横着 → ② · 上来 ↑ ③"],
+ ["Additive vs coordinated aggregation","<b>Additive</b>: actions simply sum, no organization needed (Weber's savers, votes, purchases, false‑alarm delays).","<b>Coordinated</b>: needs organization/leaders to beat the free‑rider problem (revolution; social capital after disasters).","Also: <b>threshold/cascade</b> (segregation) and <b>emergent</b> (panic myth)."],
+ ["Declarative vs nondeclarative","<b>Declarative</b>: can be put into words; learnt fast. Survey answers, explaining why you chose sociology, values (mock Q4: A, C).","<b>Nondeclarative</b>: automatic, bodily, learnt by repetition. Typing your passcode, discomfort when a stranger stands too close on the MTR, the lemon reaction.","口诀：能说出来 → declarative；身体自动 → nondeclarative。"],
+ ["Public vs personal culture","<b>Public</b>: outside individuals — icons, discourses, institutions (a national flag, news discourse, a law).","<b>Personal</b>: inside individuals — declarative and nondeclarative.","The same value can be either: written in a constitution (public) vs held by you (personal)."],
+ ["Manifest vs latent function vs dysfunction","<b>Manifest</b>: intended & recognized (university → skilled graduates). <b>Latent</b>: unintended & unrecognized (university → marriage market).","<b>Dysfunction</b>: negative consequences (graduate over‑supply → unemployment). <b>Eufunction</b> (Merton): positive counterpart of dysfunction.","口诀：有意 = manifest；无意 = latent；有害 = dysfunction。"],
+ ["Mores vs folkways","<b>Mores</b>: norms with great moral significance; strong sanctions (don't steal, don't harm children).","<b>Folkways</b>: norms for routine, casual interaction; mild sanctions (queuing, dress codes, chopstick etiquette).","Breaking a folkway earns a stare; breaking a more earns outrage or punishment."],
+ ["Three forms of cultural capital","<b>Embodied</b>: accent, tastes, posture, knowing how to behave at a formal dinner (≈ nondeclarative).","<b>Objectified</b>: books, piano, art. <b>Institutionalized</b>: diplomas, degrees, titles.","Bourdieu: transmission → conversion → social reproduction."],
+ ["Interaction vs social influence vs socialization","<b>Interaction</b>: any exchange, ends with the encounter. <b>Social influence</b>: others change your attitude/behaviour, can be momentary (Asch), fades when they leave.","<b>Socialization</b>: prolonged, repeated learning & internalizing; persists without the agent; transfers to new situations (the nurse at a new hospital, mock Q6).","口诀：会不会带走？换了环境还在 → socialization。"],
+ ["Primary vs secondary vs anticipatory socialization","<b>Primary</b>: childhood, family. <b>Secondary</b>: later in life, outside the family, in specific institutions (new job, university, migration).","<b>Anticipatory</b>: learning the norms of a group you want to join (a student copying investment bankers before applying).","Resocialization: radical relearning, e.g. total institutions."],
+ ["Ascribed vs achieved status; master status","<b>Ascribed</b>: born into / assigned (age, ethnicity, family). <b>Achieved</b>: earned (degree, job). Instagram popularity: it depends how you got it.","<b>Master status</b>: one status that shapes your whole identity (e.g. 'student', 'celebrity', a serious illness). <b>Status set</b>: all your statuses at one time.","Role set = many roles attached to one status."],
+ ["Front stage vs backstage vs off‑stage","<b>Front</b>: performance for an audience (waiter in dining room). <b>Back</b>: performance dropped; real feelings; rehearsal (kitchen, mock Q8).","<b>Off‑stage</b>: outsiders not part of the performance, may not know it exists.","Customers are the audience, not props."],
+ ["Thomas theorem vs self‑fulfilling prophecy vs social construction","<b>Social construction of reality</b>: people creatively shape reality through interaction (Guido's game). <b>Thomas theorem</b>: situations defined as real are real in their consequences.","<b>Self‑fulfilling prophecy</b> (Merton): a <i>false</i> definition creates behaviour that makes it come true (bank run, Pygmalion, toilet paper).","Self‑fulfilling prophecy is a special case of the Thomas theorem."],
+ ["Burawoy: critical vs public; policy vs professional","<b>Critical</b>: reflexive, for academics — questions the discipline's values (mock Q3). <b>Public</b>: reflexive, for non‑academics — op‑ed, talk, movement.","<b>Professional</b>: instrumental, for academics. <b>Policy</b>: instrumental, for a client (government report).","Pathologies: scholasticism · servility · dogmatism · faddishness."],
+ ["Functionalism vs conflict vs symbolic interaction","<b>Structural‑functional</b>: society as an orderly system; functions. <b>Social‑conflict</b>: inequality, power, change.","<b>Symbolic‑interaction</b>: micro; meaning made in everyday interaction.","Macro: functionalism + conflict. Micro: SI."],
+ ["Machines: tool view vs ANT vs Tsvetkova","<b>Tool view</b> (Weber, SI, Goffman): no meaning → no interaction; we act through machines.","<b>ANT</b> (Latour): anything with effects is an actor; symmetry; delegation. <b>Tsvetkova</b>: machines as many interacting actors in a complex system; three orders of difference.","Tsvetkova cites ANT as a similar idea but stresses multiplicity and collective outcomes."],
+ ["Tsvetkova's 1st / 2nd / 3rd order","<b>1st</b>: machines behave differently (outcomes change even if unnoticed). <b>2nd</b>: humans treat machines differently; machines interact with machines.","<b>3rd</b>: machines change how humans behave toward each other (suspecting a bot changes behaviour; AlphaGo).","口诀：机器自己 → 人对机器 → 人对人。"],
+ ["[Not in L1–4 slides] Primary vs secondary group","<b>Primary group</b> (Cooley): small, personal, lasting; personal orientation (family, close friends).","<b>Secondary group</b>: large, impersonal, goal‑oriented (a work team, a volunteer committee). Mock Q9: secondary → primary.","来自模拟题第9题，请对照第5讲。"],
+ ["[Not in L1–4 slides] Sociological vs biological explanations of deviance","<b>Sociological</b>: informal social control & community programmes; fixing visible disorder (broken windows); labelling by police (mock Q10: A, C, D).","<b>Biological / individual</b>: Lombroso's 'born criminal' physical traits.","来自模拟题第10题（越轨），请对照第5/6讲。"]
+];
+$("#vsList").innerHTML=vs.map(v=>`<div class="vs"><div class="t">${v[0]}</div><div>${v[1]}</div><div>${v[2]}</div><div style="grid-column:1/-1;border-left:none;border-top:1px solid var(--rule);background:var(--hl-soft)"><span class="zh" style="color:var(--ink)">${v[3]}</span></div></div>`).join("");
+
+/* ---------- flashcards ---------- */
+const cards=[
+ ["L1","Sociological imagination","C. Wright Mills: the ability to relate private troubles to public issues and see one's biography as the intersection of society and history.","把个人困扰和公共议题联系起来的能力。","Divorce → divorce rates, women's employment; 橘生淮南则为橘。"],
+ ["L1","Coleman's boat","Coleman (1990): explain macro facts by going down to individuals (situational), across (action‑formation), and back up (aggregation).","宏观—微观—宏观的解释框架。","Weber: Calvinism → anxiety → ascetic work → capitalism."],
+ ["L1","Situational mechanism","Macro → micro: how social structure shapes individuals' beliefs, desires and options.","宏观条件塑造个人认知。","HK housing prices → 'we can't afford a child'."],
+ ["L1","Action‑formation mechanism","Micro → micro: how individuals decide and act, given their situation.","个人如何据此做决定。","Frustration → willingness to protest."],
+ ["L1","Aggregation (transformation) mechanism","Micro → macro: how individual actions combine into a collective outcome. Types: additive, coordinated, threshold/cascade, emergent.","个人行为如何汇聚成宏观结果。","Moves cascade into citywide segregation."],
+ ["L1","Free‑rider problem","Individuals benefit from collective action without contributing, so frustration alone doesn't produce a revolution; coordination is needed.","搭便车问题。","Revolution needs leaders, networks, selective incentives."],
+ ["L1","Society (Giddens)","People living in a territory, under a common political authority, aware of a distinct identity.","领土 + 政治权威 + 独特认同。","Hong Kong yes; this class no."],
+ ["L1","Eufunction","Merton (1949): a positive consequence of a social pattern for the group as a whole; the counterpart of dysfunction.","正功能。","Physician networks spreading a useful new drug."],
+ ["L1","Gemeinschaft → Gesellschaft","Shift from community (tradition, religion) to society (individuality, reason, contract) with modernization.","从礼俗社会到法理社会。","Village kinship ties → urban contracts."],
+ ["L1","Burawoy's four sociologies","Audience (academic/extra‑academic) × knowledge (instrumental/reflexive): professional, critical, policy, public.","四种社会学。","Government‑commissioned report = policy."],
+ ["L1","Latent function","Unrecognized, unintended consequence of a social structure.","潜功能。","University as a marriage market."],
+ ["L1","Symbolic‑interaction approach","Micro‑level view of society as the product of everyday interactions and shared meanings.","符号互动论。","Making meaning of a red packet in a family gathering."],
+ ["L2","Culture","The ways of thinking, ways of acting, and material objects that form a people's way of life; shared, socially transmitted, not biological.","文化：思维、行为、物质。","Cantonese slang (nonmaterial); chopsticks (material)."],
+ ["L2","Public culture","Culture externalized as public symbols, discourses, and institutions (icons, discourses, institutions).","公共文化。","A national anthem, political discourse, schools."],
+ ["L2","Declarative culture","Explicit personal culture that can be put into words: values, ideology, worldviews; learnt fast.","陈述性文化。","Ticking 'strongly agree' that hard work leads to success."],
+ ["L2","Nondeclarative culture","Implicit, durable associations, bodily comportment, skills built from repeated long‑term exposure.","非陈述性文化。","Salivating at a lemon; typing your passcode."],
+ ["L2","Folkways","Norms for routine or casual interaction; mild sanctions.","民俗。","Queuing in a lift lobby."],
+ ["L2","Mores","Norms widely observed with great moral significance.","民德。","Prohibitions on theft or violence."],
+ ["L2","Sanctions","Rewards or punishments that encourage conformity or discourage deviance.","奖惩。","A stare when you cut the queue."],
+ ["L2","Cultural capital","Bourdieu: non‑economic assets — knowledge, skills, tastes, credentials — converted into social advantage. Embodied, objectified, institutionalized.","文化资本。","Accent; piano; university degree."],
+ ["L2","Social reproduction","Inequality passed down through culture that looks like merit, not only money.","社会再生产。","Schools reward middle‑class tastes as 'talent'."],
+ ["L2","Talk is cheap","Jerolmack & Khan: self‑reports are poor predictors of behaviour; use behavioural measures for practice.","说的不等于做的。","Landlords deny bias; audit study shows it."],
+ ["L2","Dual‑process (Vaisey)","Forced‑choice surveys tap fast, automatic cognition; interviews tap slow, deliberate cognition (later seen as a continuum).","双过程模型。","Gut answer vs a long justification."],
+ ["L2","Production of culture","What gets produced depends on organizational structure and industry logics, not just individual genius.","文化生产视角。","Peterson & Berger: Billboard diversity and indie labels."],
+ ["L3","Socialization","The lifelong experience by which people develop their human potential and learn culture.","社会化。","A child learning politeness; a nurse learning hospital jargon."],
+ ["L3","Agents of socialization","Settings that guide socialization: family, school, peer group, mass media; also social media, video games, the state.","社会化代理人。","China's curriculum reform as a state agent."],
+ ["L3","Hidden curriculum","Things schools teach informally (punctuality, obedience, competition).","隐性课程。","Learning to raise hands and wait your turn."],
+ ["L3","Anticipatory socialization","Learning the norms of a group one would like to join.","预期社会化。","A student dressing and talking like consultants before applying."],
+ ["L3","Primary vs secondary socialization","Primary: in childhood, mainly family. Secondary: later in life, outside the family.","初级/次级社会化。","University, new job, migration."],
+ ["L3","Cultural downloading","The (functionalist) image of socialization as passive installation of culture into individuals.","文化下载模型。","Parsons' 'requisite orientations' for a role."],
+ ["L3","Selection (Z) / homophily","People choose friends, schools and feeds that match them, so a raw X–Y correlation mixes socialization with selection.","选择效应。","Liberal students choose liberal friends."],
+ ["L3","Natural experiment","Policy or timing assigns exposure as‑if randomly.","自然实验。","Cantoni et al. 2017: curriculum reform cohorts."],
+ ["R","Postfunctionalist socialization","Guhin et al.: keep the concept, drop functionalist baggage; attend to power, agency, heterogeneity and history.","后功能主义社会化。","Racial socialization by Black fathers."],
+ ["R","Deficit thinking","Explaining disadvantage by the supposed cultural deficits of the disadvantaged (culture of poverty), hiding racism and resource hoarding.","缺陷思维。","Moynihan report (1965)."],
+ ["R","Interpretive reproduction","Corsaro: children collectively reinterpret and rework adult culture in peer groups.","诠释性再生产。","Preschool kids inventing their own rules for adult games."],
+ ["R","What's lost without socialization","Power, history, transferability (Guhin et al. 2021).","失去：权力、历史、可迁移性。","Bourdieu's terms don't travel outside sociology."],
+ ["R","Correspondence principle","Lizardo: culture is encoded in the format in which it was encountered.","对应原则。","Reading a manual → declarative; practising → nondeclarative."],
+ ["R","Dissociation (weak coupling)","Lizardo: declarative and nondeclarative culture can come apart within the same person.","解离 / 弱耦合。","High aspirations, low school know‑how."],
+ ["R","Achievement–aspiration paradox","Minority youth report equal or higher pro‑school aspirations but lower achievement; explained by nondeclarative skill gaps.","成就—抱负悖论。","Black vs white youth in the US (Lizardo 2017)."],
+ ["R","H–M social system","Tsvetkova et al.: humans and machines as one social system of H–H, H–M, M–M interactions.","人机社会系统。","Wikipedia's ecology of bots and editors."],
+ ["R","Orders of difference","1st: machines behave differently; 2nd: interactions with/among machines differ; 3rd: machines change H–H behaviour.","三层差异。","Suspecting bots changes how people talk online."],
+ ["R","Covert vs overt bots","Covert (hidden) bots are more problematic; known bots reduce human cooperation; hidden cooperative bots can raise it.","隐蔽 vs 公开机器人。","Twitter's impersonating bots vs Wikipedia's registered bots."],
+ ["R","Weak‑bot paradox","Bots with weak direct influence spread messages further via network cascades.","弱机器人效应。","Gentle bots don't alienate followers."],
+ ["L4","Status","A social position (nominal) or rank (ordinal) a person holds.","地位。","Professor, mother, student."],
+ ["L4","Role","Behaviour expected of someone holding a status.","角色。","Influencer creates content."],
+ ["L4","Master status","A status that has special importance for social identity, shaping a person's whole life.","主要地位。","'Student' for you right now."],
+ ["L4","Role strain","Tension among roles connected to a single status.","角色紧张。","Tutor: mentor vs grader."],
+ ["L4","Role conflict","Conflict among roles connected to two or more statuses.","角色冲突。","Class vs part‑time job."],
+ ["L4","Dramaturgical analysis","Goffman: social interaction as theatrical performance; impression management.","拟剧论。","Frank Abagnale posing as a pilot."],
+ ["L4","Thomas theorem","Situations defined as real are real in their consequences.","托马斯定理。","Bank run; toilet paper panic."],
+ ["L4","Actor‑network theory","Latour, Callon, Law: society is made of humans and non‑humans acting together; anything with effects is an actor.","行动者网络理论。","Speed bump doing the police officer's job (delegation)."]
+];
+const decks={all:"All",L1:"L1 Sociology",L2:"L2 Culture",L3:"L3 Socialization",L4:"L4 Interaction",R:"Readings"};
+const fcSel=$("#fcFilter");Object.entries(decks).forEach(([k,v])=>{const o=document.createElement("option");o.value=k;o.textContent=v;fcSel.appendChild(o)});
+let deck=[],idx=0,got=new Set();
+function buildDeck(shuffle){deck=cards.filter(c=>fcSel.value==="all"||c[0]===fcSel.value);if(shuffle){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}}idx=0;got=new Set();showCard()}
+function showCard(){const c=deck[idx];$("#fc").classList.remove("flip");if(!c)return;
+ $("#fcTerm").textContent=c[1];$("#fcSrc").textContent=decks[c[0]];
+ $("#fcBack").innerHTML=`<span class="label">${c[1]}</span><p>${c[2]}</p><p class="zh">${c[3]}</p><p><b>Example:</b> ${c[4]}</p>`;
+ $("#fcCount").textContent=`${idx+1} / ${deck.length}`;$("#fcTally").textContent=`Got it: ${got.size} / ${deck.length}`}
+$("#fcInner").addEventListener("click",()=>$("#fc").classList.toggle("flip"));
+$("#fcInner").addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();$("#fc").classList.toggle("flip")}});
+$("#fcNext").onclick=()=>{idx=(idx+1)%deck.length;showCard()};
+$("#fcPrev").onclick=()=>{idx=(idx-1+deck.length)%deck.length;showCard()};
+$("#fcGot").onclick=()=>{got.add(deck[idx][1]);idx=(idx+1)%deck.length;showCard()};
+$("#fcMiss").onclick=()=>{got.delete(deck[idx][1]);const c=deck.splice(idx,1)[0];deck.push(c);if(idx>=deck.length)idx=0;showCard()};
+fcSel.onchange=()=>buildDeck(false);$("#fcShuffle").onclick=()=>buildDeck(true);
+buildDeck(false);
+
+/* ---------- MCQ ---------- */
+// [id, tag, src, stem, options[], correct indices[], explanation]
+const Q=[
+ ["T1","L1","Teacher mock #1","A man in his 40s feels like a failure after his divorce. Which question best reflects C. Wright Mills' sociological imagination?",["What personality traits made him a difficult partner?","How have divorce rates, women's employment, and expectations of marriage changed in his society over the past 40 years?","Would counselling or medication help him cope?","What mistakes did his ex‑wife make in the relationship?"],[1],"B links a private trouble to public issues and history. A, C and D stay at the individual or psychological level. <span class='zh'>把个人困扰连到社会趋势和历史 = 社会学想象力。</span>"],
+ ["T2","L1","Teacher mock #2","Rising housing prices in Hong Kong lead young couples to believe they cannot afford to have children. In Coleman's boat, this link from a macro condition to individual beliefs is the:",["Situational mechanism","Action‑formation mechanism","Aggregation (transformation) mechanism","Macro‑to‑macro correlation"],[0],"Macro condition → individual belief = arrow ①, the situational mechanism. Action‑formation would be belief → deciding not to have children; aggregation would be many decisions → low fertility. <span class='zh'>宏观→个人认知 = ①。</span>"],
+ ["T3","L1","Teacher mock #3","A sociologist publishes an article in a sociology journal arguing that the discipline's main research programs ignore questions of values and power. In Burawoy's typology, this is ___ sociology, and its typical pathology is ___.",["Professional; self‑referential scholasticism","Public; faddishness","Critical; dogmatism","Policy; servility"],[2],"Academic audience + reflexive knowledge (questioning the discipline's values) = critical sociology; its pathology is dogmatism."],
+ ["T4","L2","Teacher mock #4","Which of the following are examples of declarative personal culture? (Select all that apply)",["Choosing 'Strongly agree' on a survey item stating that hard work is the key to success","Typing your phone passcode without consciously thinking about the numbers","Explaining to an interviewer why you decided to study sociology","Feeling uncomfortable when a stranger stands too close to you on the MTR"],[0,2],"A and C are explicit, verbal statements of values and reasons. B (motor skill) and D (automatic bodily reaction) are nondeclarative."],
+ ["T5","L2","Teacher mock #5","In interviews, landlords say they never consider ethnicity when choosing tenants. But in an audit study with identical rental applications, applicants with South Asian names receive fewer replies. According to the 'Talk Is Cheap' debate, what is the best conclusion?",["The interviews are more valid because landlords reflected carefully on their answers","What people say may not predict what they do, so behavioural measures like audit studies can capture practices that self‑reports miss","The audit study measures declarative culture, while the interviews measure non‑declarative culture","Landlords' culture is purely non‑declarative, so interviews are useless for any research question"],[1],"Talk ≠ action. C reverses the mapping (interviews tap declarative culture). D is too extreme: interviews are still good for idealized, discursive culture."],
+ ["T6","L3","Teacher mock #6","A newly hired nurse gradually adopts the hospital's routines, its jargon, and its ways of talking about patients' deaths. Years later, at a different hospital, she still does things the same way. This is best described as:",["Social influence, because her colleagues changed her behaviour","Primary socialization, because it shaped her identity","Secondary socialization, because she durably internalized the norms of a specific institution as an adult","Anticipatory socialization, because she was preparing for a future role"],[2],"It persists without the original agents and transfers to a new setting (→ socialization, not influence), and it happened in adulthood in an institution (→ secondary)."],
+ ["T7","L4","Teacher mock #7","A university tutor is expected to be a warm, supportive mentor to her students while also grading those same students strictly and impartially. What concept best describes her situation?",["Role conflict","Role strain","Status inconsistency","Master status"],[1],"Both expectations belong to one status (tutor) → role strain. Role conflict needs two different statuses."],
+ ["T8","L4","Teacher mock #8","A waiter is polite and formal with customers in the dining room, then jokes about them with co‑workers in the kitchen. Which pairing is the most accurate Goffman reading?",["Dining room → back region; kitchen → front region","Dining room → front region; kitchen → back region where the performance can be dropped","Kitchen jokes → role exit; politeness → role strain","Customers → props; co‑workers → audience"],[1],"The dining room is where the performance is staged for the audience; the kitchen is backstage."],
+ ["T9","L5?","Teacher mock #9","A volunteer team forms to organise a charity run. At first, members only discuss logistics. Two years later, they meet on weekends to talk about their families and personal problems, even when no event is planned. What change has taken place?",["A primary group became a secondary group; goal orientation became personal orientation","A secondary group became a primary group; goal orientation became personal orientation","A category became a crowd","A network became a category"],[1],"From goal‑oriented, impersonal (secondary) to personal, lasting ties (primary). Not covered in your L1–4 slides; check Lecture 5."],
+ ["T10","L5?","Teacher mock #10","City officials want to reduce youth violence in a low‑income district. Which proposals reflect a sociological approach rather than a biological or individual one? (Select all that apply)",["Fund local nonprofits that run youth programmes and help residents build informal social control","Screen teenagers for physical traits thought to signal a 'born criminal' tendency","Clean up and green vacant lots and repair visible disorder in public spaces","Examine whether policing practices label young people from the district as deviant, and how that label affects them"],[0,2,3],"A (social control/community), C (environment, broken windows), D (labelling theory) are sociological; B is Lombroso‑style biology. Deviance content; check Lecture 5/6."],
+
+ ["P1","L1","Predicted","A city's crime falls after it builds more parks. A researcher only reports this city‑level correlation. According to the lecture, this is best described as:",["A strong explanation","An explanation","A description, not yet an explanation","An aggregation mechanism"],[2],"Macro → macro alone is a description. Adding a plausible micro story makes it an explanation; testing that story makes it a strong explanation."],
+ ["P2","L1","Predicted","Each Calvinist saves and reinvests independently, and capital accumulates without any organization. Which aggregation type is this?",["Coordinated","Additive","Threshold/cascade","Emergent"],[1],"No coordination needed; individual actions simply sum, like votes or purchases."],
+ ["P3","L1","Predicted","During a fire evacuation, people queue and help each other without any leader, producing an orderly exit. The aggregation is best called:",["Additive","Coordinated","Emergent / self‑organizing","Situational"],[2],"The 'panic myth' case: order emerges from many rule‑following individuals, without top‑down coordination."],
+ ["P4","L1","Predicted","Why does the J‑curve theory of revolution need 'coordinated' aggregation?",["Because frustrated individuals automatically add up to a revolution","Because collective action must solve the free‑rider problem through organizations and leaders","Because revolutions only happen during extreme misery","Because macro facts directly explain macro facts"],[1],"Frustration alone doesn't sum into revolt; people free‑ride unless organized."],
+ ["P5","L1","Predicted","A sociologist writes a report commissioned by the Labour Department on how to reduce youth unemployment, and the report avoids conclusions the department would dislike. Burawoy would call this:",["Policy sociology showing servility","Public sociology showing faddishness","Professional sociology showing scholasticism","Critical sociology showing dogmatism"],[0],"Extra‑academic client + instrumental knowledge = policy; telling the client what it wants to hear = servility."],
+ ["P6","L1","Predicted","Universities in Hong Kong are intended to train graduates for the economy, but they also bring together young people who later marry each other. The second consequence is a:",["Manifest function","Latent function","Social dysfunction","Eufunction of the state"],[1],"Unrecognized and unintended = latent function (the teacher's 'marriage broker')."],
+ ["P7","L1","Predicted","Which of these is NOT one of the three transformations linked to the birth of sociology?",["Industrialization","Urbanization","Democratization","Globalization of the internet"],[3],"Industrialization, urbanization, democratization; plus the shift from Gemeinschaft to Gesellschaft."],
+ ["P8","L1","Predicted","Our class has people and a classroom but is not a 'society' in Giddens' definition mainly because it lacks:",["A territory","A common political authority (and a lasting distinct identity)","Members","Interaction"],[1],"The teacher's point: no political authority, and the class identity disappears after December."],
+ ["P9","L1","Predicted","Analysing Rick and Morty's Citadel as a stratified society where Ricks and Mortys occupy unequal positions is an example of which approach?",["Structural‑functional","Social‑conflict","Symbolic‑interaction","Dramaturgical"],[1],"Focus on inequality between groups and the conflict it generates."],
+ ["P10","L2","Predicted","A family in Hong Kong has a piano at home and many English books. In Bourdieu's terms, these are:",["Embodied cultural capital","Objectified cultural capital","Institutionalized cultural capital","Social capital"],[1],"Cultural goods a person owns and can display = objectified. Accent = embodied; degree = institutionalized."],
+ ["P11","L2","Predicted","People in a lift lobby automatically form a line; anyone who cuts in gets a stare. Queuing here is best classified as a:",["More, with a strong sanction","Folkway, with a mild sanction","Value","Counterculture"],[1],"Routine casual norm with mild sanction = folkway (the lecture's queuing boat)."],
+ ["P12","L2","Predicted","A researcher wants to capture people's fast, automatic cognition about immigrants rather than their careful justifications. Following Vaisey's dual‑process argument, she should prefer:",["Long open‑ended interviews","Forced‑choice survey items or implicit measures like the IAT","Content analysis of newspapers","Participant observation of parliament"],[1],"Forced‑choice items and implicit measures tap fast, nondeliberative cognition; interviews tap slow deliberation."],
+ ["P13","L2","Predicted","Wacquant's boxing‑gym ethnography is cited in the lecture to show that some culture:",["Is best measured by surveys","Exists only in action, as embodied practice","Is purely material","Is identical across social classes"],[1],"Embodied, tacit culture that self‑reports miss; you reach it through participant observation."],
+ ["P14","L2","Predicted","Peterson and Berger counted chart turnover on the Billboard Hot 100 to test whether independent labels produced more musical diversity. This belongs to which approach to measuring culture in objects?",["Consumption","Diffusion","Production of culture","Field theory"],[2],"What gets produced depends on organizational and industry structure."],
+ ["P15","L2","Predicted","Which statement about public and personal culture is correct?",["Values can only exist as personal culture","A value written into a national constitution is public culture; the same value held by you is personal culture","Nondeclarative culture is a type of public culture","Public culture is always material"],[1],"The slide: some elements like values can be public or personal depending where you observe them."],
+ ["P16","L3","Predicted","A Year 6 student who wants to join her older cousin's university debate team starts copying how the debaters talk and dress. This is:",["Primary socialization","Anticipatory socialization","Resocialization in a total institution","Social influence only"],[1],"Learning the norms of a group one wants to join."],
+ ["P17","L3","Predicted","In Asch's conformity experiment, a participant agrees with the wrong answer while others are present, but not once alone. Compared with socialization, this is best called:",["Social influence: momentary and fades when others are absent","Secondary socialization","Primary socialization","Cultural capital"],[0],"Socialization persists without the agent and transfers to new situations; influence can be momentary."],
+ ["P18","L3","Predicted","A study finds that students with liberal friends hold more liberal views. A critic says liberal students may simply choose liberal friends. The critic is pointing to:",["Heterogeneous β","Selection (homophily), the Z term","Timing of exposure","Interpretive reproduction"],[1],"Without controlling selection, β mixes socialization and selection."],
+ ["P19","L3","Predicted","Cantoni et al. (2017) compared Chinese student cohorts who entered school before vs after a curriculum reform rolled out by province. Which research design is this?",["Cross‑sectional survey","Panel data","Natural experiment","Online field experiment"],[2],"The policy assigned exposure as‑if randomly; difference‑in‑differences by cohort and province."],
+ ["P20","L3","Predicted","Which critique of Parsonian socialization emphasises that children interpret and resist adult culture?",["Power","Agency","Politics (culture of poverty)","Transferability"],[1],"Wrong's 'oversocialized' actor; Corsaro and Pugh on children's agency."],
+ ["P21","L3","Predicted","Learning to raise your hand, wait your turn and obey bells at school, without any lesson on it, is called the:",["Hidden curriculum","Manifest function","Anticipatory socialization","Generalized other"],[0],"What schools teach informally."],
+ ["P22","L4","Predicted","A student works a part‑time job whose shifts clash with her lectures. This is:",["Role strain","Role conflict","Master status","Role set"],[1],"Two statuses (student, worker) → role conflict."],
+ ["P23","L4","Predicted","A rumour spreads on WhatsApp that a healthy bank is collapsing; depositors withdraw at once and the bank fails. Which concepts apply? (Select all that apply)",["Thomas theorem","Self‑fulfilling prophecy","Role strain","Social construction of reality"],[0,1,3],"Defined as real → real consequences (Thomas); a false definition makes itself true (Merton); reality shaped through interaction. Role strain is irrelevant."],
+ ["P24","L4","Predicted","In actor‑network theory, saying that a speed bump 'does the police officer's job' illustrates:",["Symmetry","Delegation","Impression management","Master status"],[1],"A role is handed over to a thing."],
+ ["P25","L4","Predicted","Someone's Instagram popularity comes mainly from being the child of a famous actor. Her follower count reflects:",["An achieved status","An ascribed status","Role strain","A role set"],[1],"Popularity from family background or birth traits = ascribed; from effort and content = achieved."],
+ ["P26","R","Predicted · Tsvetkova","After learning that many accounts in a forum are bots, human users become more suspicious and less cooperative with each other. In Tsvetkova et al.'s terms this is a:",["First‑order difference","Second‑order difference","Third‑order difference","Machine–machine interaction"],[2],"Machines change how humans behave and interact with each other; just suspecting bots counts."],
+ ["P27","R","Predicted · Tsvetkova","According to Tsvetkova et al., which bots are most likely to raise cooperation in a public‑goods game?",["Overt bots that announce they are machines","A few covert, persistently cooperative bots well placed in the network","Bots trained to imitate human players exactly","Bots that defect to punish free‑riders"],[1],"Humans wait for others to cooperate; hidden persistent cooperators tip them. Known bots reduce cooperation."],
+ ["P28","R","Predicted · Tsvetkova","Why can weak social‑media bots have strong effects on public opinion?",["They persuade each individual strongly","Their weak direct influence doesn't alienate followers, so messages spread further through cascades","They always tell the truth","They replace human users entirely"],[1],"Network amplification through indirect influence, persistence, numbers and placement."],
+ ["P29","R","Predicted · Lizardo","Disadvantaged students say education is the key to success as often as advantaged students, yet perform worse. Lizardo explains this mainly through:",["Oppositional culture","A gap in nondeclarative school know‑how, dissociated from shared declarative aspirations","Asian/Confucian values","Lack of declarative knowledge about schooling"],[1],"Declarative aspirations are homogenized by public achievement discourse; nondeclarative competences need repeated exposure and track resources."],
+ ["P30","R","Predicted · Lizardo","Lizardo's 'correspondence principle' states that:",["All culture is stored in a language‑like format","Culture is encoded in the format in which it was encountered","Declarative and nondeclarative culture always match","Public culture determines personal culture"],[1],"Explicit exposure → declarative; repeated experiential exposure → nondeclarative. He rejects the 'linguistic fallacy'."],
+ ["P31","R","Predicted · Guhin","Guhin et al. (2021) argue that something is lost when sociologists stop using 'socialization'. Which of these do they name? (Select all that apply)",["Power","History","Transferability","Functional equilibrium"],[0,1,2],"Power, history, transferability. They reject the functionalist idea of equilibrium."],
+ ["P32","R","Predicted · Guhin","Explaining intergenerational poverty by claiming poor families fail to socialize their children properly is criticised by Guhin et al. as:",["Interpretive reproduction","Deficit thinking linked to 'culture of poverty' arguments","Postfunctionalist socialization","Anticipatory socialization"],[1],"It blames victims and hides racism and resource hoarding (Lewis 1959; Moynihan 1965)."]
+];
+let ans=store.get("soc611_ans",{});
+function render(){
+ const f=$("#qFilter").value;
+ const list=Q.filter(q=>{if(f==="all")return true;if(f==="T")return q[0][0]==="T";if(f==="wrong"){const a=ans[q[0]];return a&&!a.ok}return q[1]===f||(f==="L1"&&false)});
+ $("#qList").innerHTML=list.length?list.map((q,i)=>{
+  const multi=q[5].length>1, id=q[0], a=ans[id];
+  const opts=q[4].map((o,j)=>{let cls="";if(a){if(q[5].includes(j))cls="right";else if(a.pick.includes(j))cls="wrong"}
+   return `<label class="opt ${cls}" for="${id}_${j}"><input type="${multi?"checkbox":"radio"}" name="${id}" id="${id}_${j}" value="${j}" ${a&&a.pick.includes(j)?"checked":""} ${a?"disabled":""}><span><b>${"ABCD"[j]}.</b> ${o}</span></label>`}).join("");
+  return `<div class="q" data-id="${id}"><div class="qh"><span class="chip ${id[0]==="T"?"tag-t":""}">${q[2]}</span><span class="chip">${q[1]}</span>${multi?'<span class="chip">Select all that apply</span>':""}</div>
+   <div class="stem">${q[3]}</div>${opts}
+   ${a?`<div class="expl"><b>${a.ok?"Correct.":"Answer: "+q[5].map(x=>"ABCD"[x]).join(", ")+"."}</b> ${q[6]}</div>`:`<button class="btn primary" type="button" data-check="${id}" style="margin-top:8px">Check</button>`}</div>`}).join(""):`<p class="plate">No questions here yet. Answer some questions first, or pick another filter.</p>`;
+ const done=Object.keys(ans).filter(k=>Q.some(q=>q[0]===k)),right=done.filter(k=>ans[k].ok);
+ $("#scoreTxt").textContent=`${right.length} correct · ${done.length} / ${Q.length} answered`;
+}
+$("#qList").addEventListener("click",e=>{const id=e.target.getAttribute&&e.target.getAttribute("data-check");if(!id)return;
+ const q=Q.find(x=>x[0]===id);const pick=[...document.querySelectorAll(`input[name="${id}"]:checked`)].map(x=>+x.value);
+ if(!pick.length){e.target.textContent="Pick an option first";return}
+ const ok=pick.length===q[5].length&&pick.every(x=>q[5].includes(x));ans[id]={pick,ok};store.set("soc611_ans",ans);
+ const y=window.scrollY;render();window.scrollTo(0,y)});
+$("#qFilter").onchange=render;
+$("#qReset").onclick=()=>{ans={};store.set("soc611_ans",ans);render()};
+render();
+
+/* ---------- essays ---------- */
+const E=[
+ {r:"Lizardo",p:"high",q:"Many Hong Kong residents say they support environmental protection, yet single‑use plastic consumption remains very high. Using Lizardo (2017), explain this gap and what it implies for policy.",
+  out:["<b>D</b>: Lizardo: personal culture comes in declarative (know‑that) and nondeclarative (know‑how) forms, acquired through different pathways; they are often weakly coupled.","<b>M</b>: Correspondence principle; declarative = fast learning from campaigns; nondeclarative = slow learning from repeated daily routines; dissociation; 'talk is cheap'.","<b>A</b>: Pro‑environment attitudes are declarative, homogenized by public discourse (campaigns, school). Takeaway habits, grabbing bags, convenience are nondeclarative, built over years of repetition in a convenience‑oriented city. Surveys capture the first; behaviour reflects the second.","<b>L</b>: Policy should change repeated environments (levies, defaults, reusable systems) so new habits form; measure with behavioural data, not just surveys. Limitation: structure (price, housing, time) also matters."],
+  model:`<p>Lizardo (2017) argues that people hold culture in two analytically distinct forms. <b>Declarative culture</b> is explicit "know‑that" knowledge — values, beliefs and justifications that can be put into words and are acquired quickly, sometimes after a single exposure. <b>Nondeclarative culture</b> is implicit "know‑how" — habits, bodily skills and automatic associations built only through slow, repeated exposure to consistent experiences. Because each is encoded in the format in which it was encountered (the <i>correspondence principle</i>), the two can be <b>dissociated</b>: people may "tell more than they know how".</p>
+  <p>The gap between Hong Kong residents' green attitudes and their plastic use is a clear case of such weak coupling. Support for environmental protection is declarative: it is learned from government campaigns, school lessons and media, and is easily repeated in a survey. However, everyday consumption — ordering takeaway at lunch, accepting a plastic bag at the wet market — is governed by nondeclarative routines built over years of living in a fast, convenience‑oriented city. When a person is hungry and in a hurry, these fast, automatic habits are activated, not the slow, deliberate reasoning that produced the survey answer. The contradiction is therefore not simple hypocrisy; it reflects two separate cultural systems.</p>
+  <p>This has two implications. Methodologically, attitude surveys will overestimate green behaviour, so researchers should also use behavioural data such as purchase records or observation. For policy, more awareness campaigns mainly add declarative knowledge that people already have. Interventions that change the repeated environment — the plastic‑bag levy, "no cutlery" as the default on delivery apps, convenient reusable container schemes — can build new nondeclarative habits through repetition. A limitation is that culture is not the only factor: price, small flats and long working hours also constrain choices.</p>`},
+ {r:"Lizardo",p:"mid",q:"Apply Lizardo's distinction between declarative and nondeclarative culture to explain educational inequality between students from grassroots and middle‑class families in Hong Kong.",
+  out:["<b>D</b>: Two forms of personal culture; achievement–aspiration paradox.","<b>M</b>: Aspirations are declarative and homogenized by public achievement discourse ('education changes fate'); school‑relevant know‑how (study routines, asking teachers for help, confident speaking) is nondeclarative and needs repeated exposure, which depends on family resources.","<b>A</b>: Grassroots students in subdivided flats say education matters as much as anyone; but tutoring, quiet study space, extracurriculars and middle‑class 'ease' with teachers are unequally built. Connect to Bourdieu's embodied cultural capital and Calarco's help‑seeking.","<b>L</b>: Avoid the 'they don't value education' explanation (declarative bias). Interventions: structured mentoring, repeated practice in help‑seeking. Measure with observation, not only surveys."]},
+ {r:"Lizardo",p:"mid",q:"A researcher wants to study whether HK employers discriminate against older job applicants. Using Lizardo, discuss which methods capture which form of culture.",
+  out:["<b>D</b>: Declarative vs nondeclarative culture; weak coupling.","<b>M</b>: Interviews/surveys elicit declarative culture (stated non‑discrimination, idealized accounts); audit/correspondence studies and observation capture nondeclarative practice (automatic age associations); IAT for implicit associations.","<b>A</b>: Employers may sincerely say age doesn't matter but call back fewer older applicants with identical CVs (mock Q5 logic).","<b>L</b>: Interviews still useful for understanding justifications; best design triangulates (Weininger & Lareau triangulated interviews + observation)."]},
+ {r:"Guhin",p:"high",q:"Guhin et al. (2021) argue for a postfunctionalist concept of socialization. Explain their argument and apply it to the experiences of ethnic minority (e.g., South Asian) students in Hong Kong schools.",
+  out:["<b>D</b>: Socialization declined with Parsons' functionalism; critiques (power, agency, heterogeneity, politics) target functionalism not the process; keep the term for power, history, transferability.","<b>M</b>: Downloading model vs postfunctionalist model; culture of poverty and deficit thinking; 'being brought into a social world not of your own choosing'.","<b>A</b>: EM students socialized into Chinese‑medium school norms and hidden curriculum (power); they negotiate, code‑switch, build peer cultures (agency, heterogeneity); outcomes shaped by language policy and banding (history, structure).","<b>L</b>: Avoid blaming families; research should study institutions; concept transfers to education policy and psychology."],
+  model:`<p>Guhin, Calarco and Miller‑Idriss (2021) note that socialization, once called "the most important part" of sociology, fell out of favour because it became tied to Parsons' structural functionalism. In that version socialization looked like <b>cultural downloading</b>: individuals passively absorbed shared values that kept society stable. Critics objected that it ignored <b>power</b>, <b>agency</b> and <b>heterogeneity</b>, and that "culture of poverty" arguments such as the Moynihan report used it to blame poor and Black families, a form of <b>deficit thinking</b>. The authors' key point is that these are critiques of functionalism, not of socialization as a process. Dropping the word costs sociology three things: attention to <b>power</b>, to the <b>history</b> of how people came to know their culture, and <b>transferability</b> across disciplines. They therefore propose a <b>postfunctionalist</b> socialization that keeps the concept while recognising agency, conflict and inequality.</p>
+  <p>The experience of South Asian students in Hong Kong schools shows why this matters. First, <b>power</b>: these students are brought into a school world they did not choose, where Chinese‑language proficiency, classroom norms and the hidden curriculum define success. Teachers' expectations and banding systems shape what they learn about their own abilities. Second, <b>agency and heterogeneity</b>: students are not passive receivers. They switch between Urdu, English and Cantonese, form peer groups, and selectively adopt or resist school norms, similar to Corsaro's interpretive reproduction. Third, <b>history</b>: their options reflect the history of language policy and the post‑1997 shift to Chinese‑medium instruction.</p>
+  <p>A functionalist account would say these students "fail to be socialized" because of their family culture — exactly the deficit thinking Guhin et al. warn against. A postfunctionalist account instead asks how institutions socialize students unequally. Policy should therefore target schools — second‑language Chinese curricula, teacher training and desegregation — rather than families. A limitation is that "socialization" can still be stretched too far, so researchers should specify which agents and mechanisms are at work.</p>`},
+ {r:"Guhin",p:"mid",q:"Explain how gender socialization shapes girls' lower participation in STEM, and evaluate this explanation using Guhin et al.'s critiques.",
+  out:["<b>D</b>: Socialization via agents; Guhin's postfunctionalist approach.","<b>M</b>: Family expectations, school (teachers' feedback), peers, social‑media feeds (Bos et al. 2020: gendered political ambition already in elementary school; same logic for STEM).","<b>A</b>: Coleman's boat: gendered media/school environment → beliefs about own ability → choices of subjects → occupational segregation.","<b>L</b>: Heterogeneity ('doing gender' is ongoing, so change is possible); agency (girls resist); power and rival explanations (discrimination, institutional rules) — a gap is not proof of socialization."]},
+ {r:"Guhin",p:"mid",q:"Children growing up in subdivided flats are more likely to remain poor as adults. Some commentators blame 'poor family culture'. Using Guhin et al. (2021), critically discuss this claim.",
+  out:["<b>D</b>: Culture of poverty arguments (Lewis, Moynihan) used socialization to blame families; deficit thinking.","<b>M</b>: Postfunctionalist view: socialization happens under asymmetric power, across many agents (schools, housing, labour market), with agency and heterogeneity.","<b>A</b>: Lack of space, parents' long hours, school resources and networks shape what children learn; children also show agency and diverse paths.","<b>L</b>: Keep culture in the explanation (avoid swinging to pure structure, cf. Small et al.), but link it to power and resources; policy targets housing and schooling."]},
+ {r:"Tsvetkova",p:"high",q:"Using Tsvetkova et al. (2024), explain how social media bots can contribute to political polarization, and suggest how platforms or governments should respond.",
+  out:["<b>D</b>: Humans and machines form one social system; collective outcomes cannot be deduced from individual behaviour; three orders of difference.","<b>M</b>: Contagion situation; covert bots; weak direct influence but strong indirect influence via cascades, central targets, numbers; spiral of silence; exploitation of homophily and confirmation bias.","<b>A</b>: Coleman's boat: bots deployed → users exposed to inflammatory content → share or fall silent → cascades → polarized opinion (US 2016, Brexit, Catalonia).","<b>L</b>: Policy: label or remove covert bots; ensure diversity; study with agent‑based models and experiments; ethics of research with bots."],
+  model:`<p>Tsvetkova et al. (2024) argue that modern society is a single <b>human–machine social system</b> made of human–human, human–machine and machine–machine interactions. Because machines behave differently from humans and also change how humans behave, the <b>collective outcomes cannot be deduced from human or machine behaviour alone</b>. They describe three orders of difference: machines behave differently (first order), humans interact differently with machines and machines interact with each other (second order), and machines change how humans interact with one another (third order).</p>
+  <p>Political polarization on social media is a case of <b>contagion</b>. Covert bots that impersonate humans make up an estimated 9–15% of Twitter users and become more active around controversial political events. Individually, they are weak: they mostly retweet and have few followers. Yet the authors show that weak bots can be more influential collectively, because their gentle messages do not alienate followers and therefore travel further through network <b>cascades</b>. Bots target central human users, amplify negative and inflammatory content, and exploit human tendencies such as homophily and confirmation bias. They may also change people's confidence to speak, triggering a <b>spiral of silence</b> among those who disagree. In Coleman's terms, bots enter at the micro level — shaping what each user sees and how they react — but their effects appear at the macro level as polarized public opinion, as observed around the 2016 US election, Brexit and the 2017 Catalan referendum. Even the suspicion that opponents are bots can make users more hostile toward each other, a third‑order effect.</p>
+  <p>Tsvetkova et al. suggest responses at three levels. Platforms should distinguish covert from overt bots, since declared bots that follow rules (as on Wikipedia) are far less harmful. Policymakers should treat AI as a <b>multiplicity</b> of machines and protect the diversity of information ecologies rather than regulating a single "AI threat". Researchers should test interventions with agent‑based models and field experiments while handling the ethics of deploying bots. A limitation is that humans still choose to share false content, so bot regulation alone will not end polarization.</p>`},
+ {r:"Tsvetkova",p:"mid",q:"Hong Kong is introducing care robots in elderly homes. Apply Tsvetkova et al. (2024) to discuss the possible social consequences.",
+  out:["<b>D</b>: H–M social systems; machines as actors, not just tools.","<b>M</b>: Humans treat machines socially but with flatter emotions; contagion (robots can increase social interaction among older adults); co‑development (outsourcing care reduces caregivers' empathy).","<b>A</b>: Robots' reminders and small talk may raise residents' interaction (positive contagion); staff may withdraw from emotional labour (third order); M–M coordination with scheduling systems.","<b>L</b>: Policy: diversity, human‑in‑the‑loop, cultural context in design; link to ANT and the lecture's 'care robot' example."]},
+ {r:"Tsvetkova",p:"mid",q:"Students increasingly use generative AI chatbots for coursework. Discuss the collective consequences using Tsvetkova et al.",
+  out:["<b>D</b>: Collective outcomes differ from the sum of individual behaviour.","<b>M</b>: Algorithm appreciation (trust in machine advice); collective decision‑making and diversity; machines can introduce new solutions (AlphaGo) or homogenize them; third‑order effects on H–H discussion.","<b>A</b>: If many students rely on one model, answers converge (less diversity → worse collective intelligence); or AI suggests novel ideas that improve group work.","<b>L</b>: Design/policy: encourage diverse tools, require reflection; ethics of covert AI use."]},
+ {r:"Integrated",p:"mid",q:"Are recommendation algorithms a new agent of socialization? Answer using at least two of the three readings.",
+  out:["<b>Guhin</b>: postfunctionalist socialization; algorithms as a powerful agent we don't choose; agency in what we follow.","<b>Lizardo</b>: repeated feed exposure builds nondeclarative tastes and associations, while declarative views may stay the same (weak coupling).","<b>Tsvetkova</b>: machines as actors; H–M interactions; collective effects (polarization, cascades).","<b>Lecture 3</b>: X = algorithmic exposure, Y = expressed culture; caution: traces show expressed, not internalized culture; selection and algorithmic confounding."]}
+];
+$("#essayList").innerHTML=E.map((e,i)=>`<details class="essay" ${i===0?"open":""}><summary><span class="chip">${e.r}</span> <span class="prob ${e.p==="high"?"":"mid"}">${e.p==="high"?"High probability":"Possible"}</span><span class="qq">${e.q}</span></summary><div class="inner"><h4>Outline (D‑M‑A‑L)</h4><ul class="tight">${e.out.map(x=>`<li>${x}</li>`).join("")}</ul>${e.model?`<h4>Model answer (≈380 words)</h4><div class="model">${e.model}</div>`:`<p class="zh">练习：按上面提纲限时 20–25 分钟写一篇，再对照同一篇论文的示范答案检查结构。</p>`}</div></details>`).join("");
+
+route();
+})();
+</script>
+
+</body></html>
